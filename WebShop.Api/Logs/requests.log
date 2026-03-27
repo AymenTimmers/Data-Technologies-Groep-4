@@ -33,3 +33,17 @@
 2026-03-27 12:51:35.308 UTC | POST /products/search | status=200 | elapsedMs=9 | error=SQLite Error 1: 'no such column: p.category_id'.
 2026-03-27 12:51:36.245 UTC | POST /products/search | status=200 | elapsedMs=0 | error=SQLite Error 1: 'no such column: p.category_id'.
 2026-03-27 12:51:36.457 UTC | POST /products/search | status=200 | elapsedMs=0 | error=SQLite Error 1: 'no such column: p.category_id'.
+2026-03-27 12:53:56.838 UTC | POST /products/search | status=200 | elapsedMs=0 | error=SQLite Error 1: 'no such column: p.name'.
+2026-03-27 12:57:24.240 UTC | POST /products/search | status=200 | elapsedMs=38
+2026-03-27 13:16:41.834 UTC | GET /categories | status=200 | elapsedMs=25
+2026-03-27 13:16:41.841 UTC | GET /products | status=200 | elapsedMs=31
+2026-03-27 13:17:12.269 UTC | POST /auth/login | status=401 | elapsedMs=41
+2026-03-27 13:17:14.480 UTC | POST /auth/login | status=401 | elapsedMs=1
+2026-03-27 13:17:20.289 UTC | POST /auth/login | status=401 | elapsedMs=1
+2026-03-27 13:17:20.822 UTC | POST /auth/login | status=401 | elapsedMs=1
+2026-03-27 13:17:31.129 UTC | POST /auth/login | status=401 | elapsedMs=1
+2026-03-27 13:17:32.228 UTC | POST /auth/login | status=401 | elapsedMs=1
+2026-03-27 13:17:32.408 UTC | POST /auth/login | status=401 | elapsedMs=1
+2026-03-27 13:17:32.570 UTC | POST /auth/login | status=401 | elapsedMs=1
+2026-03-27 13:17:35.290 UTC | POST /auth/register | status=201 | elapsedMs=54
+2026-03-27 13:17:37.509 UTC | POST /auth/login | status=200 | elapsedMs=5

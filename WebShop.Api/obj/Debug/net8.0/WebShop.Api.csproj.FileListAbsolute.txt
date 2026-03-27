@@ -76,3 +76,6 @@ C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debu
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.db
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327124111.db
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327124534.db
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327124950.db
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327125643.db
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327125723.db
