@@ -183,6 +183,16 @@
         "runtime": {
           "lib/netcoreapp2.1/_._": {}
         }
+      },
+      "WebShop.Contracts/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/WebShop.Contracts.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/WebShop.Contracts.dll": {}
+        }
       }
     }
   },
@@ -332,11 +342,17 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "WebShop.Contracts/1.0.0": {
+      "type": "project",
+      "path": "../WebShop.Contracts/WebShop.Contracts.csproj",
+      "msbuildProject": "../WebShop.Contracts/WebShop.Contracts.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "Microsoft.Data.Sqlite >= 10.0.3"
+      "Microsoft.Data.Sqlite >= 10.0.3",
+      "WebShop.Contracts >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -363,7 +379,11 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\jurvd\\Documents\\Informatica\\Code\\Data-Technologies\\WebShop.Contracts\\WebShop.Contracts.csproj": {
+              "projectPath": "C:\\Users\\jurvd\\Documents\\Informatica\\Code\\Data-Technologies\\WebShop.Contracts\\WebShop.Contracts.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -401,6 +421,10 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.13, 8.0.13]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
             "version": "[8.0.13, 8.0.13]"
           },
           {

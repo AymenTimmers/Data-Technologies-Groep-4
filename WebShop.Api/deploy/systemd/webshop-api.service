@@ -1,0 +1,18 @@
+[Unit]
+Description=WebShop API
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/webshop-api
+ExecStart=/usr/bin/dotnet /opt/webshop-api/WebShop.Api.dll
+Restart=always
+RestartSec=5
+KillSignal=SIGINT
+SyslogIdentifier=webshop-api
+User=www-data
+Group=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://0.0.0.0:5088
+
+[Install]
+WantedBy=multi-user.target

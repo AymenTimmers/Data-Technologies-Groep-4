@@ -1895,7 +1895,8 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
-          "Microsoft.Data.Sqlite": "10.0.3"
+          "Microsoft.Data.Sqlite": "10.0.3",
+          "WebShop.Contracts": "1.0.0"
         },
         "compile": {
           "bin/placeholder/WebShop.Api.dll": {}
@@ -1906,6 +1907,16 @@
         "frameworkReferences": [
           "Microsoft.AspNetCore.App"
         ]
+      },
+      "WebShop.Contracts/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/WebShop.Contracts.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/WebShop.Contracts.dll": {}
+        }
       }
     }
   },
@@ -5846,6 +5857,11 @@
       "type": "project",
       "path": "../WebShop.Api/WebShop.Api.csproj",
       "msbuildProject": "../WebShop.Api/WebShop.Api.csproj"
+    },
+    "WebShop.Contracts/1.0.0": {
+      "type": "project",
+      "path": "../WebShop.Contracts/WebShop.Contracts.csproj",
+      "msbuildProject": "../WebShop.Contracts/WebShop.Contracts.csproj"
     }
   },
   "projectFileDependencyGroups": {

@@ -13,3 +13,7 @@ C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\WebShop.Console.pdb
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\WebShop.Console.genruntimeconfig.cache
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\ref\WebShop.Console.dll
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\bin\Debug\net8.0\WebShop.Contracts.dll
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\bin\Debug\net8.0\WebShop.Contracts.pdb
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\WebShop.Console.csproj.AssemblyReference.cache
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\WebShop..454016B3.Up2Date

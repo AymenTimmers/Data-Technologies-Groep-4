@@ -1022,8 +1022,19 @@
       },
       "xunit.runner.visualstudio/2.5.3": {},
       "WebShop.Console/1.0.0": {
+        "dependencies": {
+          "WebShop.Contracts": "1.0.0"
+        },
         "runtime": {
           "WebShop.Console.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "WebShop.Contracts/1.0.0": {
+        "runtime": {
+          "WebShop.Contracts.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -1661,6 +1672,11 @@
       "hashPath": "xunit.runner.visualstudio.2.5.3.nupkg.sha512"
     },
     "WebShop.Console/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "WebShop.Contracts/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

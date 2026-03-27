@@ -104,3 +104,5 @@ C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console.Test
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console.Tests\obj\Debug\net8.0\WebShop.Console.Tests.pdb
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console.Tests\obj\Debug\net8.0\WebShop.Console.Tests.genruntimeconfig.cache
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console.Tests\obj\Debug\net8.0\ref\WebShop.Console.Tests.dll
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console.Tests\bin\Debug\net8.0\WebShop.Contracts.dll
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console.Tests\bin\Debug\net8.0\WebShop.Contracts.pdb

@@ -1195,10 +1195,19 @@
       "xunit.runner.visualstudio/2.5.3": {},
       "WebShop.Api/1.0.0": {
         "dependencies": {
-          "Microsoft.Data.Sqlite": "10.0.3"
+          "Microsoft.Data.Sqlite": "10.0.3",
+          "WebShop.Contracts": "1.0.0"
         },
         "runtime": {
           "WebShop.Api.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "WebShop.Contracts/1.0.0": {
+        "runtime": {
+          "WebShop.Contracts.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -1885,6 +1894,11 @@
       "hashPath": "xunit.runner.visualstudio.2.5.3.nupkg.sha512"
     },
     "WebShop.Api/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "WebShop.Contracts/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
