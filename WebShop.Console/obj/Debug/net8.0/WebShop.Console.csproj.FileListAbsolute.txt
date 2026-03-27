@@ -1,0 +1,15 @@
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\bin\Debug\net8.0\WebShop.Console.exe
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\bin\Debug\net8.0\WebShop.Console.deps.json
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\bin\Debug\net8.0\WebShop.Console.runtimeconfig.json
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\bin\Debug\net8.0\WebShop.Console.dll
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\bin\Debug\net8.0\WebShop.Console.pdb
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\WebShop.Console.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\WebShop.Console.AssemblyInfoInputs.cache
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\WebShop.Console.AssemblyInfo.cs
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\WebShop.Console.csproj.CoreCompileInputs.cache
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\WebShop.Console.sourcelink.json
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\WebShop.Console.dll
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\refint\WebShop.Console.dll
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\WebShop.Console.pdb
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\WebShop.Console.genruntimeconfig.cache
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Console\obj\Debug\net8.0\ref\WebShop.Console.dll

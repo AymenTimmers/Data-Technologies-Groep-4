@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "YwtoQRJxWTQ5CTCzGRt48ALzP7SQB589stlDFd1SrkE=",
+  "Source": "WebShop.Api",
+  "BasePath": "_content/WebShop.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
