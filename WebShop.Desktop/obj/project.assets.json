@@ -1,0 +1,116 @@
+{
+  "version": 3,
+  "targets": {
+    "net8.0-windows7.0": {
+      "WebShop.Contracts/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/WebShop.Contracts.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/WebShop.Contracts.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "WebShop.Contracts/1.0.0": {
+      "type": "project",
+      "path": "../WebShop.Contracts/WebShop.Contracts.csproj",
+      "msbuildProject": "../WebShop.Contracts/WebShop.Contracts.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net8.0-windows7.0": [
+      "WebShop.Contracts >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\jurvd\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\jurvd\\Documents\\Informatica\\Code\\Data-Technologies\\WebShop.Desktop\\WebShop.Desktop.csproj",
+      "projectName": "WebShop.Desktop",
+      "projectPath": "C:\\Users\\jurvd\\Documents\\Informatica\\Code\\Data-Technologies\\WebShop.Desktop\\WebShop.Desktop.csproj",
+      "packagesPath": "C:\\Users\\jurvd\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\jurvd\\Documents\\Informatica\\Code\\Data-Technologies\\WebShop.Desktop\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\jurvd\\AppData\\Roaming\\NuGet\\NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net8.0-windows"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "projectReferences": {
+            "C:\\Users\\jurvd\\Documents\\Informatica\\Code\\Data-Technologies\\WebShop.Contracts\\WebShop.Contracts.csproj": {
+              "projectPath": "C:\\Users\\jurvd\\Documents\\Informatica\\Code\\Data-Technologies\\WebShop.Contracts\\WebShop.Contracts.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "9.0.200"
+    },
+    "frameworks": {
+      "net8.0-windows7.0": {
+        "targetAlias": "net8.0-windows",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.13, 8.0.13]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.13, 8.0.13]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.13, 8.0.13]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.13, 8.0.13]"
+          }
+        ],
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          },
+          "Microsoft.WindowsDesktop.App.WindowsForms": {
+            "privateAssets": "none"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

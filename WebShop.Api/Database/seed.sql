@@ -97,19 +97,47 @@ VALUES
 (12, 'First Aid Kit 180', 39.00, 98, 'Comprehensive emergency kit', 'SafeAid', NULL, 2022),
 (12, 'Foam Roller 45cm', 24.00, 88, 'Recovery roller for muscles', 'RecoverFit', NULL, 2023),
 (12, 'Magnesium Supplements', 21.00, 132, '120 tablets daily support', 'NutriCore', NULL, 2025),
-(12, 'Sleep Support Tea', 12.00, 167, 'Herbal tea for evening routine', 'CalmLeaf', NULL, 2024);
+(12, 'Sleep Support Tea', 12.00, 167, 'Herbal tea for evening routine', 'CalmLeaf', NULL, 2024),
+(1, 'Kubernetes for Practitioners', 42.00, 68, 'Deploy and scale modern container workloads', 'OpsShelf', 'Infra House', 2025),
+(1, 'Practical Machine Learning', 46.00, 59, 'Hands on ML pipelines and model serving', 'DataForge', 'Signal Press', 2024),
+(2, 'Mini Projector Full HD', 269.00, 27, 'Portable projector for movies and presentations', 'ViewLite', NULL, 2024),
+(2, 'Tablet Pro 11', 699.00, 32, 'High refresh tablet with stylus support', 'NexaTab', NULL, 2025),
+(2, 'WiFi 7 Router AXE', 239.00, 29, 'Tri band router with low latency mesh support', 'NetPulse', NULL, 2025),
+(3, 'Survival Co-op Deluxe', 59.00, 72, 'Team up and craft your way through open worlds', 'ForgePlay', 'ForgePlay Studio', 2025),
+(3, 'Wireless Gaming Headset', 129.00, 41, 'Spatial audio headset with long battery life', 'RaidSound', NULL, 2024),
+(3, 'Arcade Fight Stick', 139.00, 18, 'Tournament ready arcade controller', 'ComboCore', NULL, 2023),
+(4, 'Cast Iron Pan 28cm', 49.00, 74, 'Seasoned cast iron pan for stovetop and oven', 'IronChef', NULL, 2023),
+(4, 'Smart Air Purifier', 179.00, 35, 'HEPA purifier with air quality sensor', 'PureRoom', NULL, 2025),
+(4, 'Bamboo Cutting Board Set', 32.00, 122, 'Set of three durable kitchen boards', 'HomeGrain', NULL, 2024),
+(5, 'Foldable Treadmill', 499.00, 16, 'Compact treadmill for home cardio routines', 'RunDesk', NULL, 2025),
+(5, 'Trail Running Poles', 69.00, 57, 'Lightweight poles for hiking and alpine runs', 'PeakStride', NULL, 2024),
+(5, 'Insulated Water Bottle 1L', 27.00, 143, 'Vacuum bottle keeps drinks cold for 24h', 'EverSip', NULL, 2023),
+(6, 'SPF 50 Sunscreen Gel', 19.00, 170, 'Lightweight broad spectrum sun protection', 'SunGuard', NULL, 2025),
+(6, 'Beard Care Oil', 17.00, 132, 'Nourishing oil for beard and skin comfort', 'BoldRoot', NULL, 2024),
+(7, 'Magnetic Tiles 120', 84.00, 46, 'Creative geometric building tile set', 'FormaKids', NULL, 2025),
+(7, 'Science Lab Starter Kit', 52.00, 53, 'Safe chemistry and physics experiments', 'YoungLab', NULL, 2024),
+(8, 'Desk Organizer Modular', 24.00, 139, 'Stackable trays and compartments for desk tools', 'Organica', NULL, 2023),
+(8, 'Wireless Presenter Pro', 41.00, 64, 'Laser presenter with slide controls', 'BriefPoint', NULL, 2024),
+(9, 'Travel Duffel 35L', 74.00, 58, 'Weekend duffel with shoe compartment', 'RouteWear', NULL, 2025),
+(9, 'Polarized Sunglasses', 39.00, 95, 'UV protection sunglasses with lightweight frame', 'SunTrace', NULL, 2024),
+(10, 'Turntable Bluetooth', 189.00, 21, 'Belt drive record player with wireless output', 'VinylWave', NULL, 2023),
+(10, 'Soundbar 3.1', 299.00, 25, 'Cinema soundbar with wireless subwoofer', 'CineTone', NULL, 2025),
+(11, 'Smart Irrigation Controller', 149.00, 28, 'Automated watering schedules based on weather', 'GardenSync', NULL, 2025),
+(11, 'Leak Sensor 3 Pack', 34.00, 87, 'Water leak alerts for kitchen and bathroom', 'DryHome', NULL, 2024),
+(12, 'Posture Corrector Strap', 29.00, 76, 'Comfort support strap for desk workers', 'AlignWell', NULL, 2024),
+(12, 'Cold and Heat Gel Pack', 15.00, 155, 'Reusable therapy pack for pain relief', 'ThermoRelief', NULL, 2023);
 
 -- DISCOUNT CODES
-INSERT INTO discount_codes (code, discount_percentage, active, valid_until)
+INSERT INTO discount_codes (code, discount_percentage, active, valid_until, max_uses, uses_count)
 VALUES
-('DISCOUNT10', 10, 1, '2027-12-31'),
-('DISCOUNT20', 20, 0, '2025-01-31'),
-('WELCOME5', 5, 1, '2028-01-31'),
-('SPRING15', 15, 1, '2027-05-31'),
-('VIP25', 25, 1, '2027-12-31'),
-('BOOKWORM12', 12, 1, '2028-06-30'),
-('GAMER8', 8, 1, '2028-03-31'),
-('HOME10', 10, 1, '2027-10-31');
+('DISCOUNT10', 10, 1, '2027-12-31', 50, 0),
+('DISCOUNT20', 20, 0, '2025-01-31', 20, 0),
+('WELCOME5', 5, 1, '2028-01-31', 500, 0),
+('SPRING15', 15, 1, '2027-05-31', 100, 0),
+('VIP25', 25, 1, '2027-12-31', 10, 0),
+('BOOKWORM12', 12, 1, '2028-06-30', 75, 0),
+('GAMER8', 8, 1, '2028-03-31', 80, 0),
+('HOME10', 10, 1, '2027-10-31', 120, 0);
 
 -- CART
 INSERT INTO carts (user_id)
@@ -133,6 +161,13 @@ VALUES
 (1, 45),
 (2, 64),
 (2, 70);
+
+-- USER SHIPPING ADDRESSES
+INSERT INTO user_shipping_addresses (user_id, label, shipping_address, is_default)
+VALUES
+(1, 'Home', 'Straat Mannetje 10, Amsterdam', 1),
+(1, 'Parents', 'Lindelaan 22, Utrecht', 0),
+(2, 'Office', 'Kade 19, Rotterdam', 1);
 
 -- ORDERS
 INSERT INTO orders (user_id, order_number, total_price, shipping_address, discount_code_id)

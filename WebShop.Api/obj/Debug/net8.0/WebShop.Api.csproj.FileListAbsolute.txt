@@ -56,7 +56,6 @@ C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\obj\Debu
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\obj\Debug\net8.0\WebShop.Api.genruntimeconfig.cache
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\obj\Debug\net8.0\ref\WebShop.Api.dll
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\seed.sql
-C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.db
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\WebShop.Contracts.dll
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\WebShop.Contracts.pdb
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\WebShop.Api.exe
@@ -72,9 +71,8 @@ C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debu
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\Models\10_favorites.sql
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\Models\11_product_ratings.sql
 C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\Models\schema.sql
-C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327093144.db
-C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327093210.db
-C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327093427.db
-C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327093552.db
-C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327093703.db
-C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327093729.db
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\Models\12_user_shipping_addresses.sql
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327121218.db
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.db
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327124111.db
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260327124534.db

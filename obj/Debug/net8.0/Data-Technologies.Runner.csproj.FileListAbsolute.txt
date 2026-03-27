@@ -1,0 +1,15 @@
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\bin\Debug\net8.0\Data-Technologies.Runner.exe
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\bin\Debug\net8.0\Data-Technologies.Runner.deps.json
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\bin\Debug\net8.0\Data-Technologies.Runner.runtimeconfig.json
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\bin\Debug\net8.0\Data-Technologies.Runner.dll
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\bin\Debug\net8.0\Data-Technologies.Runner.pdb
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\obj\Debug\net8.0\Data-Technologies.Runner.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\obj\Debug\net8.0\Data-Technologies.Runner.AssemblyInfoInputs.cache
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\obj\Debug\net8.0\Data-Technologies.Runner.AssemblyInfo.cs
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\obj\Debug\net8.0\Data-Technologies.Runner.csproj.CoreCompileInputs.cache
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\obj\Debug\net8.0\Data-Technologies.Runner.sourcelink.json
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\obj\Debug\net8.0\Data-Technologies.Runner.dll
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\obj\Debug\net8.0\refint\Data-Technologies.Runner.dll
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\obj\Debug\net8.0\Data-Technologies.Runner.pdb
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\obj\Debug\net8.0\Data-Technologies.Runner.genruntimeconfig.cache
+C:\Users\jurvd\Documents\Informatica\Code\Data-Technologies\obj\Debug\net8.0\ref\Data-Technologies.Runner.dll

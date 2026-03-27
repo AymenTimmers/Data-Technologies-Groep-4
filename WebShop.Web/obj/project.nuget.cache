@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "ojS2pO5xMuI=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\jurvd\\Documents\\Informatica\\Code\\Data-Technologies\\WebShop.Web\\WebShop.Web.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\jurvd\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.13\\microsoft.netcore.app.ref.8.0.13.nupkg.sha512",
+    "C:\\Users\\jurvd\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.13\\microsoft.windowsdesktop.app.ref.8.0.13.nupkg.sha512",
+    "C:\\Users\\jurvd\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.13\\microsoft.aspnetcore.app.ref.8.0.13.nupkg.sha512",
+    "C:\\Users\\jurvd\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.13\\microsoft.netcore.app.host.win-x64.8.0.13.nupkg.sha512"
+  ],
+  "logs": []
+}
