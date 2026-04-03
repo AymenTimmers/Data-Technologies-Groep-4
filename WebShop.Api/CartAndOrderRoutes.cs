@@ -50,14 +50,14 @@ public static class CartAndOrderRoutes
 
         app.MapPost("/cart/items", (AddCartItemRequest request, DbOptions db) =>
         {
-            if (request.UserId <= 0 || request.ProductId <= 0)
-            {
-                return Results.BadRequest(new { message = "User id and product id must be greater than 0." });
-            }
-
             if (request.Quantity <= 0 || request.Quantity > 100)
             {
                 return Results.BadRequest(new { message = "Quantity must be between 1 and 100." });
+            }
+
+            if (request.UserId <= 0 || request.ProductId <= 0)
+            {
+                return Results.BadRequest(new { message = "User id and product id must be greater than 0." });
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
@@ -77,7 +77,7 @@ public static class CartAndOrderRoutes
                 return Results.NotFound(new { message = "Product not found." });
             }
 
-            var stock = productReader.GetInt32(1);
+            var availableStock = productReader.GetInt32(1);
 
             using var existingCommand = connection.CreateCommand();
             existingCommand.CommandText = "SELECT id, quantity FROM cart_items WHERE cart_id = @cartId AND product_id = @productId";
@@ -88,23 +88,23 @@ public static class CartAndOrderRoutes
             if (reader.Read())
             {
                 var itemId = reader.GetInt64(0);
-                var existingQuantity = reader.GetInt32(1);
-                var newQuantity = existingQuantity + request.Quantity;
+                var currentQuantity = reader.GetInt32(1);
+                var updatedQuantity = currentQuantity + request.Quantity;
 
-                if (newQuantity > stock)
+                if (updatedQuantity > availableStock)
                 {
                     return Results.BadRequest(new { message = "Requested quantity exceeds available stock." });
                 }
 
                 using var updateCommand = connection.CreateCommand();
                 updateCommand.CommandText = "UPDATE cart_items SET quantity = @quantity WHERE id = @id";
-                updateCommand.Parameters.AddWithValue("@quantity", newQuantity);
+                updateCommand.Parameters.AddWithValue("@quantity", updatedQuantity);
                 updateCommand.Parameters.AddWithValue("@id", itemId);
                 updateCommand.ExecuteNonQuery();
             }
             else
             {
-                if (request.Quantity > stock)
+                if (request.Quantity > availableStock)
                 {
                     return Results.BadRequest(new { message = "Requested quantity exceeds available stock." });
                 }
@@ -224,7 +224,7 @@ public static class CartAndOrderRoutes
                 }
             }
 
-            double subtotal = checkoutItems.Sum(i => i.UnitPrice * i.Quantity);
+            var orderSubtotal = checkoutItems.Sum(i => i.UnitPrice * i.Quantity);
             int? discountCodeId = null;
             var discountPercent = 0;
             var shouldIncrementDiscountUses = false;
@@ -256,8 +256,9 @@ public static class CartAndOrderRoutes
                 }
             }
 
-            var total = Math.Round(subtotal * (1 - (discountPercent / 100.0)), 2);
-            var orderNumber = $"ORD{DateTime.UtcNow:yyyyMMddHHmmssfff}";
+            var total = Math.Round(orderSubtotal * (1 - discountPercent / 100.0), 2);
+            var timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
+            var orderNumber = $"ORD{timestamp}";
 
             using var transaction = connection.BeginTransaction();
 

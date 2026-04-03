@@ -247,14 +247,15 @@ public class CartManagementTests
         {
             CreateCartDatabase(dbPath);
             CreateTestUser(dbPath);
-            
+
             using var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}");
             connection.Open();
             using var cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT COUNT(*) FROM carts WHERE user_id = 1";
-            var cartCount = (long)cmd.ExecuteScalar();
-            
-            Assert.Equal(1, cartCount);
+            var aantalWinkelwagens = (long)cmd.ExecuteScalar();
+
+            // Verwacht precies één winkelwagen voor de nieuwe gebruiker
+            Assert.Equal(1, aantalWinkelwagens);
         }
         finally
         {
@@ -287,8 +288,9 @@ public class CartManagementTests
                 connection.Open();
                 using var cmd = connection.CreateCommand();
                 cmd.CommandText = "SELECT COUNT(*) FROM cart_items";
-                var itemCount = (long)cmd.ExecuteScalar();
-                Assert.Equal(1, itemCount);
+                var aantalArtikelen = (long)cmd.ExecuteScalar();
+                // Controleer of het artikel correct is toegevoegd aan de winkelwagen
+                Assert.Equal(1, aantalArtikelen);
             }
         }
         finally
