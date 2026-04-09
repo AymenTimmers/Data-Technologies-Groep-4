@@ -8,4 +8,7 @@ public record ProductReviewDto(
     int Stars,
     string Explanation,
     string CreatedAtUtc
-);
+)
+{
+    public ProductReviewDto() : this(0, 0, 0, string.Empty, 0, string.Empty, string.Empty) {}
+}

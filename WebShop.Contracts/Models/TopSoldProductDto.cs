@@ -5,4 +5,9 @@ public record TopSoldProductDto(
     string ProductName,
     long SoldQuantity,
     double Revenue
-);
+)
+{
+    public TopSoldProductDto() : this(0, string.Empty, 0, 0.0) 
+    { 
+    }
+}
