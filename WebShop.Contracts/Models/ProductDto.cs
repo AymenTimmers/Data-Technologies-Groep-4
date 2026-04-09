@@ -10,4 +10,10 @@ public record ProductDto(
     string? Brand,
     string? Publisher,
     int? ReleaseYear
-);
+
+)
+{
+    public ProductDto() : this(0, 0, string.Empty, 0.0, 0, null, null, null, null) 
+    { 
+    }
+}
