@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "AovkTraUtgo=",
+  "dgSpecHash": "7i3nq6frK04=",
   "success": true,
-  "projectFilePath": "C:\\Users\\jurvd\\Documents\\Informatica\\Code\\Data-Technologies\\WebShop.Contracts\\WebShop.Contracts.csproj",
+  "projectFilePath": "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Contracts\\WebShop.Contracts.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\jurvd\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.13\\microsoft.netcore.app.ref.8.0.13.nupkg.sha512",
-    "C:\\Users\\jurvd\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.13\\microsoft.windowsdesktop.app.ref.8.0.13.nupkg.sha512",
-    "C:\\Users\\jurvd\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.13\\microsoft.aspnetcore.app.ref.8.0.13.nupkg.sha512"
+    "C:\\Users\\htimm\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.24\\microsoft.netcore.app.ref.8.0.24.nupkg.sha512",
+    "C:\\Users\\htimm\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.24\\microsoft.windowsdesktop.app.ref.8.0.24.nupkg.sha512",
+    "C:\\Users\\htimm\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.24\\microsoft.aspnetcore.app.ref.8.0.24.nupkg.sha512"
   ],
   "logs": []
 }
