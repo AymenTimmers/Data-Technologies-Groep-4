@@ -65,7 +65,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./WebShop.Api
-          file: ./WebShop.Api/Dockerfile
+          file: ./Dockerfile
           push: true
           tags: |
             ghcr.io/abid2001/webshop-api:latest
