@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: webshop-api # Only one image now
+  IMAGE_NAME: webshop-api
   IMAGE_NAMESPACE: abid2001
 
 jobs:
@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./WebShop.Api/Dockerfile # Or ./Dockerfile depending on where you put it
+          file: ./WebShop.Api/Dockerfile
           push: true
           tags: |
             ghcr.io/${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
