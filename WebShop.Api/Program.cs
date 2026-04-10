@@ -76,5 +76,7 @@ app.MapAdminRoutes();
 app.MapCatalogRoutes();
 app.MapCartAndOrderRoutes();
 app.MapSystemRoutes(documentationFolder);
+app.UseStaticFiles();
+app.MapFallbackToFile("index.html");
 
 app.Run();

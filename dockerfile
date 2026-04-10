@@ -1,20 +1,23 @@
-# Stage 1: Build the Frontend
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+# Use the SDK image to build the app
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy everything
+# 1. Copy the solution and project files first to cache the 'restore' layer
+COPY ["Data-Technologies-Groep-4.sln", "./"]
+COPY ["WebShop.Api/WebShop.Api.csproj", "WebShop.Api/"]
+COPY ["WebShop.Contracts/WebShop.Contracts.csproj", "WebShop.Contracts/"]
+
+RUN dotnet restore
+
+# 2. Copy everything else and build
 COPY . .
+WORKDIR "/src/WebShop.Api"
+RUN dotnet publish "WebShop.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Build the Frontend (if it requires a specific build step, do it here)
-# For example, if you need to move the index.js bundle:
-RUN mkdir -p WebShop.Api/wwwroot && cp WebShop.Web/index.js WebShop.Api/wwwroot/
-
-# Stage 2: Build the API
-RUN dotnet restore "WebShop.Api/WebShop.Api.csproj"
-RUN dotnet publish "WebShop.Api/WebShop.Api.csproj" -c Release -o /app/publish
-
-# Stage 3: Final Runtime
+# 3. Final Runtime Image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build-env /app/publish .
+COPY --from=build /app/publish .
+
+# Ensure the app knows to look for static files in wwwroot
 ENTRYPOINT ["dotnet", "WebShop.Api.dll"]

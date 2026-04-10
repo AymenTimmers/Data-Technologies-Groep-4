@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NovaMarket | Modern WebShop</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+
+  <section id="authGate" class="auth-gate">
+    <article class="auth-card glass">
+      <p class="kicker">Welcome Back</p>
+      <h2>Sign in to enter NovaMarket</h2>
+      <p class="auth-sub">Use your account to browse products, save cart state, and checkout.</p>
+
+      <div class="auth-grid">
+        <label>
+          <span>Email</span>
+          <input id="gateEmailInput" type="email" placeholder="you@example.com" />
+        </label>
+        <label>
+          <span>Password</span>
+          <input id="gatePasswordInput" type="password" placeholder="••••••••" />
+        </label>
+      </div>
+
+      <div class="auth-actions">
+        <button id="gateLoginBtn" class="btn btn-primary">Sign In</button>
+        <button id="gateRegisterBtn" class="btn btn-soft">Create Account</button>
+      </div>
+      <p id="gateStatusText" class="auth-status">Sign in or create an account to continue.</p>
+    </article>
+  </section>
+
+  <div id="shopShell" class="hidden">
+
+  <header class="topbar glass">
+    <div class="brand">
+      <span class="brand-mark">NM</span>
+      <div>
+        <h1>NovaMarket</h1>
+        <p>Curated gear for work and play</p>
+      </div>
+    </div>
+
+    <div class="auth-box">
+      <input id="emailInput" type="email" placeholder="Email" />
+      <input id="passwordInput" type="password" placeholder="Password" />
+      <button id="loginBtn" class="btn btn-primary">Sign In</button>
+      <button id="registerBtn" class="btn btn-soft">Register</button>
+      <button id="logoutBtn" class="btn btn-ghost">Logout</button>
+    </div>
+  </header>
+
+  <nav class="nav-strip glass">
+    <a href="/" data-route="home">Home</a>
+    <a href="#catalog">Catalog</a>
+    <a href="#collections">Collections</a>
+    <a href="#" id="navOpenCart">Cart</a>
+  </nav>
+
+  <main class="page">
+    <section id="homeView">
+    <section class="hero glass reveal">
+      <div>
+        <p class="kicker">Spring Tech Drop</p>
+        <h2>Not just a shop. A storefront experience.</h2>
+        <p>
+          Explore high-quality picks, track your cart live, and browse categories in a premium web layout.
+        </p>
+      </div>
+      <div class="hero-cta">
+        <button id="shopNowBtn" class="btn btn-primary">Shop Now</button>
+        <button id="openCartBtn" class="btn btn-soft">Open Cart</button>
+      </div>
+    </section>
+
+    <section class="chip-strip glass reveal">
+      <div class="chip-strip-head">
+        <h3>Browse by Category</h3>
+        <button id="clearChipFilterBtn" class="btn btn-ghost">Clear</button>
+      </div>
+      <div id="categoryChips" class="chips"></div>
+    </section>
+
+    <section id="collections" class="collections glass reveal">
+      <div class="collections-head">
+        <h3>Featured Collections</h3>
+        <p>Quick storefront lanes without images.</p>
+      </div>
+      <div class="collection-row">
+        <button class="collection-card" data-collection="new">Fresh Releases</button>
+        <button class="collection-card" data-collection="budget">Under EUR 40</button>
+        <button class="collection-card" data-collection="low-stock">Limited Stock</button>
+        <button class="collection-card" data-collection="premium">Premium Picks</button>
+      </div>
+    </section>
+
+    <section class="featured glass reveal">
+      <div class="featured-head">
+        <h3>Featured Today</h3>
+        <div class="featured-actions">
+          <button id="featuredPrevBtn" class="btn btn-ghost">Prev</button>
+          <button id="featuredNextBtn" class="btn btn-ghost">Next</button>
+          <button id="featuredOpenBtn" class="btn btn-primary">View</button>
+        </div>
+      </div>
+      <div id="featuredContent" class="featured-content"></div>
+    </section>
+
+    <section id="catalog" class="catalog glass reveal">
+      <div class="catalog-top">
+        <h3>Catalog</h3>
+        <p id="statusText">Loading products...</p>
+      </div>
+
+      <div class="filters">
+        <input id="searchInput" type="text" placeholder="Search name, brand, description" />
+        <select id="categorySelect"></select>
+        <input id="minPriceInput" type="number" min="0" placeholder="Min EUR" />
+        <input id="maxPriceInput" type="number" min="0" placeholder="Max EUR" />
+        <button id="searchBtn" class="btn btn-primary">Search</button>
+        <button id="resetBtn" class="btn btn-soft">Reset</button>
+      </div>
+
+      <div id="productGrid" class="product-grid"></div>
+    </section>
+    </section>
+
+    <section id="productView" class="product-view glass hidden">
+      <button id="productBackBtn" class="btn btn-ghost">Back To Catalog</button>
+      <article class="product-hero">
+        <div id="routeProductThumb" class="route-thumb">NM</div>
+        <div class="product-hero-body">
+          <p id="routeProductBrand" class="kicker">Brand</p>
+          <h2 id="routeProductTitle">Product</h2>
+          <p id="routeProductMeta" class="route-meta">EUR 0.00</p>
+          <p id="routeProductDescription" class="route-desc">Description</p>
+          <div class="hero-cta">
+            <button id="routeAddToCartBtn" class="btn btn-primary">Add To Cart</button>
+            <button id="routeOpenCartBtn" class="btn btn-soft">Open Cart</button>
+          </div>
+        </div>
+      </article>
+
+      <section class="route-section">
+        <h3>Recent Reviews</h3>
+        <div id="routeReviewList" class="review-list"></div>
+      </section>
+
+      <section class="route-section">
+        <h3>You Might Also Like</h3>
+        <div id="routeRecoGrid" class="product-grid"></div>
+      </section>
+    </section>
+  </main>
+  </div>
+
+  <aside id="cartDrawer" class="cart-drawer">
+    <div class="cart-header">
+      <h3>Your Cart</h3>
+      <button id="closeCartBtn" class="btn btn-ghost">Close</button>
+    </div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-footer">
+      <input id="shippingInput" type="text" placeholder="Shipping address" />
+      <input id="discountInput" type="text" placeholder="Discount code (optional)" />
+      <div class="cart-total-row">
+        <span>Total</span>
+        <strong id="cartTotal">EUR 0.00</strong>
+      </div>
+      <button id="checkoutBtn" class="btn btn-primary">Checkout</button>
+    </div>
+  </aside>
+
+  <dialog id="productDialog" class="product-dialog">
+    <article>
+      <header>
+        <h3 id="dialogTitle"></h3>
+        <button id="dialogCloseBtn" class="btn btn-ghost">Close</button>
+      </header>
+      <p id="dialogMeta"></p>
+      <p id="dialogDescription"></p>
+      <div class="dialog-actions">
+        <button id="dialogAddBtn" class="btn btn-primary">Add To Cart</button>
+      </div>
+      <h4>Recent Reviews</h4>
+      <div id="reviewList" class="review-list"></div>
+    </article>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
