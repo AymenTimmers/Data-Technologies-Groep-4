@@ -68,8 +68,8 @@ jobs:
           file: ./WebShop.Api/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/webshop-api:latest
-            ghcr.io/${{ github.repository_owner }}/webshop-api:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner_lowercase }}/webshop-api:latest
+            ghcr.io/${{ github.repository_owner_lowercase }}/webshop-api:${{ github.sha }}
 
       # ---------------- FRONTEND ----------------
       - name: Build & Push Frontend
