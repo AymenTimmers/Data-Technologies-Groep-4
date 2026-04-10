@@ -64,23 +64,12 @@ jobs:
       - name: Build & Push API
         uses: docker/build-push-action@v5
         with:
-          context: ./WebShop.Api
+          context: .
           file: ./Dockerfile
           push: true
           tags: |
             ghcr.io/abid2001/webshop-api:latest
             ghcr.io/abid2001/webshop-api:${{ github.sha }}
-
-      # ---------------- FRONTEND ----------------
-      - name: Build & Push Frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./WebShop.Web
-          file: ./WebShop.Web/Dockerfile
-          push: true
-          tags: |
-            ghcr.io/abid2001/webshop-web:latest
-            ghcr.io/abid2001/webshop-web:${{ github.sha }}
 
 
   deploy:
