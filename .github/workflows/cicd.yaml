@@ -1,0 +1,118 @@
+name: CI & CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAMESPACE: ${{ github.repository_owner }}
+
+jobs:
+
+  build-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore Data-Technologies-Groep-4.sln
+
+      - name: Build Solution
+        run: dotnet build Data-Technologies-Groep-4.sln --configuration Release --no-restore
+
+      - name: Run Tests
+        run: dotnet test Data-Technologies-Groep-4.sln --configuration Release --no-build
+
+
+  docker-build-push:
+    name: Build & Push Docker Images
+    runs-on: ubuntu-latest
+    needs: build-test
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # ---------------- API ----------------
+      - name: Build & Push API
+        uses: docker/build-push-action@v5
+        with:
+          context: ./WebShop.Api
+          file: ./WebShop.Api/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/webshop-api:latest
+            ghcr.io/${{ github.repository_owner }}/webshop-api:${{ github.sha }}
+
+      # ---------------- FRONTEND ----------------
+      - name: Build & Push Frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./WebShop.Web
+          file: ./WebShop.Web/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/webshop-web:latest
+            ghcr.io/${{ github.repository_owner }}/webshop-web:${{ github.sha }}
+
+
+  deploy:
+    name: Manual Deploy (Server Pull)
+    runs-on: ubuntu-latest
+    needs: docker-build-push
+
+    steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Trigger Server Deploy
+        run: |
+          ssh -i ~/.ssh/id_rsa \
+            -o StrictHostKeyChecking=no \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+
+            set -euo pipefail
+
+            cd /home/DataTech/webshop || exit 1
+
+            echo "${GHCR_TOKEN}" | docker login ghcr.io \
+              -u "${GITHUB_USER}" --password-stdin
+
+            docker compose pull
+            docker compose up -d
+
+            docker image prune -f
+          EOF
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USER: ${{ github.actor }}
