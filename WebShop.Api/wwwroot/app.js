@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5088";
+const API_BASE = "";
 
 const state = {
   user: null,
