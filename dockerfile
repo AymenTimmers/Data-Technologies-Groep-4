@@ -1,23 +1,22 @@
-# Use the SDK image to build the app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# 1. Copy the solution and project files first to cache the 'restore' layer
-COPY ["Data-Technologies-Groep-4.sln", "./"]
-COPY ["WebShop.Api/WebShop.Api.csproj", "WebShop.Api/"]
-COPY ["WebShop.Contracts/WebShop.Contracts.csproj", "WebShop.Contracts/"]
-
-RUN dotnet restore
-
-# 2. Copy everything else and build
+# 1. Copy EVERYTHING in the repo to the container
+# This ensures the .sln finds all projects (Api, Contracts, Tests, etc.)
 COPY . .
+
+# 2. Restore using the solution file
+RUN dotnet restore "Data-Technologies-Groep-4.sln"
+
+# 3. Build and Publish the Api project
 WORKDIR "/src/WebShop.Api"
 RUN dotnet publish "WebShop.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# 3. Final Runtime Image
+# 4. Final Runtime Image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
+# Copy the published output from the build stage
 COPY --from=build /app/publish .
 
-# Ensure the app knows to look for static files in wwwroot
+# The app will serve static files from wwwroot automatically if configured in Program.cs
 ENTRYPOINT ["dotnet", "WebShop.Api.dll"]
