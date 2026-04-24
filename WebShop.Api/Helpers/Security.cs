@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace WebShop.Api;
+namespace WebShop.Api.Helpers;
 
 public static class Security
 {

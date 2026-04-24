@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace WebShop.Api;
+namespace WebShop.Api.Helpers;
 
 public static class DiscountCodeGenerator
 {

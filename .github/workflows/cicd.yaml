@@ -56,21 +56,16 @@ jobs:
 
   deploy:
     name: Manual Deploy
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: docker-build-push
+
     steps:
-      - name: Trigger Server Deploy
+      - uses: actions/checkout@v4
+
+      - name: Deploy by building locally
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
-            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} \
-            "GITHUB_USER=${{ github.actor }} GHCR_TOKEN=${{ secrets.GITHUB_TOKEN }} bash -s" << 'EOF'
-            set -e
-            cd /home/DataTech/webshop
-            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_USER" --password-stdin
-            docker compose pull
-            docker compose up -d
-            docker image prune -f
-          EOF
+          set -e
+          cd /home/DataTech/webshop
+          docker compose build
+          docker compose up -d
+          docker image prune -f

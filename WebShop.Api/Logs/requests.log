@@ -59,3 +59,9 @@
 2026-04-10 09:32:55.353 UTC | POST /auth/login | status=401 | elapsedMs=8
 2026-04-10 09:32:57.142 UTC | POST /auth/register | status=201 | elapsedMs=26
 2026-04-10 09:32:58.826 UTC | POST /auth/login | status=200 | elapsedMs=3
+2026-04-24 08:15:44.829 UTC | GET /index.html | status=200 | elapsedMs=14
+2026-04-24 08:15:44.844 UTC | GET /app.js | status=200 | elapsedMs=5
+2026-04-24 08:15:44.844 UTC | GET /styles.css | status=200 | elapsedMs=5
+2026-04-24 08:15:44.949 UTC | GET /favicon.ico | status=404 | elapsedMs=0
+2026-04-24 08:15:45.048 UTC | GET /categories | status=200 | elapsedMs=168
+2026-04-24 08:15:45.052 UTC | GET /products | status=200 | elapsedMs=173

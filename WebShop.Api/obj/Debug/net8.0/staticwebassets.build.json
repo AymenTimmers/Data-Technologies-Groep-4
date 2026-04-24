@@ -1,1 +1,331 @@
-{"Version":1,"Hash":"2Z0S4afGOXCpGNWq5y0ed94SD7+x/ixIk8MY0HSoc6g=","Source":"WebShop.Api","BasePath":"/","Mode":"Root","ManifestType":"Build","ReferencedProjectsConfiguration":[],"DiscoveryPatterns":[{"Name":"WebShop.Api\\wwwroot","Source":"WebShop.Api","ContentRoot":"C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\","BasePath":"/","Pattern":"**"}],"Assets":[{"Identity":"C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\app.js","SourceId":"WebShop.Api","SourceType":"Discovered","ContentRoot":"C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\","BasePath":"/","RelativePath":"app#[.{fingerprint}]?.js","AssetKind":"All","AssetMode":"All","AssetRole":"Primary","AssetMergeBehavior":"","AssetMergeSource":"","RelatedAsset":"","AssetTraitName":"","AssetTraitValue":"","Fingerprint":"2s7nhumzsr","Integrity":"IpBZL6ZTykQSzSo1dxSWmXS7fXx05J23lRiK9T8SNa8=","CopyToOutputDirectory":"Never","CopyToPublishDirectory":"PreserveNewest","OriginalItemSpec":"wwwroot\\app.js","FileLength":23516,"LastWriteTime":"2026-04-07T11:10:26+00:00"},{"Identity":"C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\index.html","SourceId":"WebShop.Api","SourceType":"Discovered","ContentRoot":"C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\","BasePath":"/","RelativePath":"index#[.{fingerprint}]?.html","AssetKind":"All","AssetMode":"All","AssetRole":"Primary","AssetMergeBehavior":"","AssetMergeSource":"","RelatedAsset":"","AssetTraitName":"","AssetTraitValue":"","Fingerprint":"y5ovxojpri","Integrity":"Fh3J/h+mJdRg1kPg36Pt0/xFSRu8xBdaELU+pihwOCQ=","CopyToOutputDirectory":"Never","CopyToPublishDirectory":"PreserveNewest","OriginalItemSpec":"wwwroot\\index.html","FileLength":7331,"LastWriteTime":"2026-04-07T11:10:26+00:00"},{"Identity":"C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\styles.css","SourceId":"WebShop.Api","SourceType":"Discovered","ContentRoot":"C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\","BasePath":"/","RelativePath":"styles#[.{fingerprint}]?.css","AssetKind":"All","AssetMode":"All","AssetRole":"Primary","AssetMergeBehavior":"","AssetMergeSource":"","RelatedAsset":"","AssetTraitName":"","AssetTraitValue":"","Fingerprint":"gffrv9x4es","Integrity":"JCbad1tpfzbftnA3lAtnjUFD7Np7T1QAfqZZx9M+/co=","CopyToOutputDirectory":"Never","CopyToPublishDirectory":"PreserveNewest","OriginalItemSpec":"wwwroot\\styles.css","FileLength":9793,"LastWriteTime":"2026-04-07T11:10:26+00:00"}],"Endpoints":[{"Route":"app.2s7nhumzsr.js","AssetFile":"C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\app.js","Selectors":[],"ResponseHeaders":[{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"23516"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\"IpBZL6ZTykQSzSo1dxSWmXS7fXx05J23lRiK9T8SNa8=\""},{"Name":"Last-Modified","Value":"Tue, 07 Apr 2026 11:10:26 GMT"}],"EndpointProperties":[{"Name":"fingerprint","Value":"2s7nhumzsr"},{"Name":"integrity","Value":"sha256-IpBZL6ZTykQSzSo1dxSWmXS7fXx05J23lRiK9T8SNa8="},{"Name":"label","Value":"app.js"}]},{"Route":"app.js","AssetFile":"C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\app.js","Selectors":[],"ResponseHeaders":[{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"23516"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\"IpBZL6ZTykQSzSo1dxSWmXS7fXx05J23lRiK9T8SNa8=\""},{"Name":"Last-Modified","Value":"Tue, 07 Apr 2026 11:10:26 GMT"}],"EndpointProperties":[{"Name":"integrity","Value":"sha256-IpBZL6ZTykQSzSo1dxSWmXS7fXx05J23lRiK9T8SNa8="}]},{"Route":"index.html","AssetFile":"C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\index.html","Selectors":[],"ResponseHeaders":[{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"7331"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\"Fh3J/h+mJdRg1kPg36Pt0/xFSRu8xBdaELU+pihwOCQ=\""},{"Name":"Last-Modified","Value":"Tue, 07 Apr 2026 11:10:26 GMT"}],"EndpointProperties":[{"Name":"integrity","Value":"sha256-Fh3J/h+mJdRg1kPg36Pt0/xFSRu8xBdaELU+pihwOCQ="}]},{"Route":"index.y5ovxojpri.html","AssetFile":"C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\index.html","Selectors":[],"ResponseHeaders":[{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"7331"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\"Fh3J/h+mJdRg1kPg36Pt0/xFSRu8xBdaELU+pihwOCQ=\""},{"Name":"Last-Modified","Value":"Tue, 07 Apr 2026 11:10:26 GMT"}],"EndpointProperties":[{"Name":"fingerprint","Value":"y5ovxojpri"},{"Name":"integrity","Value":"sha256-Fh3J/h+mJdRg1kPg36Pt0/xFSRu8xBdaELU+pihwOCQ="},{"Name":"label","Value":"index.html"}]},{"Route":"styles.css","AssetFile":"C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\styles.css","Selectors":[],"ResponseHeaders":[{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"9793"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\"JCbad1tpfzbftnA3lAtnjUFD7Np7T1QAfqZZx9M+/co=\""},{"Name":"Last-Modified","Value":"Tue, 07 Apr 2026 11:10:26 GMT"}],"EndpointProperties":[{"Name":"integrity","Value":"sha256-JCbad1tpfzbftnA3lAtnjUFD7Np7T1QAfqZZx9M+/co="}]},{"Route":"styles.gffrv9x4es.css","AssetFile":"C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\styles.css","Selectors":[],"ResponseHeaders":[{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"9793"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\"JCbad1tpfzbftnA3lAtnjUFD7Np7T1QAfqZZx9M+/co=\""},{"Name":"Last-Modified","Value":"Tue, 07 Apr 2026 11:10:26 GMT"}],"EndpointProperties":[{"Name":"fingerprint","Value":"gffrv9x4es"},{"Name":"integrity","Value":"sha256-JCbad1tpfzbftnA3lAtnjUFD7Np7T1QAfqZZx9M+/co="},{"Name":"label","Value":"styles.css"}]}]}
+{
+  "Version": 1,
+  "Hash": "ytsUv3SKMca5sl0PXtAgXE1Ipjs2mVURMdxe8NU787Y=",
+  "Source": "WebShop.Api",
+  "BasePath": "_content/WebShop.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "WebShop.Api\\wwwroot",
+      "Source": "WebShop.Api",
+      "ContentRoot": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\",
+      "BasePath": "_content/WebShop.Api",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\app.js",
+      "SourceId": "WebShop.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\",
+      "BasePath": "_content/WebShop.Api",
+      "RelativePath": "app#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "s4hr31al24",
+      "Integrity": "fPZOb+i6Xwxd+R0LkH8/hUeBxiN3ebKXzTkqD2Qg65U=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\app.js"
+    },
+    {
+      "Identity": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\index.html",
+      "SourceId": "WebShop.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\",
+      "BasePath": "_content/WebShop.Api",
+      "RelativePath": "index#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "y5ovxojpri",
+      "Integrity": "Fh3J/h+mJdRg1kPg36Pt0/xFSRu8xBdaELU+pihwOCQ=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\styles.css",
+      "SourceId": "WebShop.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\",
+      "BasePath": "_content/WebShop.Api",
+      "RelativePath": "styles#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "gffrv9x4es",
+      "Integrity": "JCbad1tpfzbftnA3lAtnjUFD7Np7T1QAfqZZx9M+/co=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\styles.css"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "app.js",
+      "AssetFile": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\app.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "23495"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fPZOb+i6Xwxd+R0LkH8/hUeBxiN3ebKXzTkqD2Qg65U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Apr 2026 08:09:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-fPZOb+i6Xwxd+R0LkH8/hUeBxiN3ebKXzTkqD2Qg65U="
+        }
+      ]
+    },
+    {
+      "Route": "app.s4hr31al24.js",
+      "AssetFile": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\app.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "23495"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fPZOb+i6Xwxd+R0LkH8/hUeBxiN3ebKXzTkqD2Qg65U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Apr 2026 08:09:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "s4hr31al24"
+        },
+        {
+          "Name": "label",
+          "Value": "app.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-fPZOb+i6Xwxd+R0LkH8/hUeBxiN3ebKXzTkqD2Qg65U="
+        }
+      ]
+    },
+    {
+      "Route": "index.html",
+      "AssetFile": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7331"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Fh3J/h+mJdRg1kPg36Pt0/xFSRu8xBdaELU+pihwOCQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Apr 2026 08:09:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Fh3J/h+mJdRg1kPg36Pt0/xFSRu8xBdaELU+pihwOCQ="
+        }
+      ]
+    },
+    {
+      "Route": "index.y5ovxojpri.html",
+      "AssetFile": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7331"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Fh3J/h+mJdRg1kPg36Pt0/xFSRu8xBdaELU+pihwOCQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Apr 2026 08:09:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "y5ovxojpri"
+        },
+        {
+          "Name": "label",
+          "Value": "index.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Fh3J/h+mJdRg1kPg36Pt0/xFSRu8xBdaELU+pihwOCQ="
+        }
+      ]
+    },
+    {
+      "Route": "styles.css",
+      "AssetFile": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9793"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JCbad1tpfzbftnA3lAtnjUFD7Np7T1QAfqZZx9M+/co=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Apr 2026 08:09:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-JCbad1tpfzbftnA3lAtnjUFD7Np7T1QAfqZZx9M+/co="
+        }
+      ]
+    },
+    {
+      "Route": "styles.gffrv9x4es.css",
+      "AssetFile": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\wwwroot\\styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9793"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JCbad1tpfzbftnA3lAtnjUFD7Np7T1QAfqZZx9M+/co=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Apr 2026 08:09:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "gffrv9x4es"
+        },
+        {
+          "Name": "label",
+          "Value": "styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-JCbad1tpfzbftnA3lAtnjUFD7Np7T1QAfqZZx9M+/co="
+        }
+      ]
+    }
+  ]
+}

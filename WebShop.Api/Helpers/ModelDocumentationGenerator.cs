@@ -1,6 +1,7 @@
 using Microsoft.Data.Sqlite;
 using System.Text;
-namespace WebShop.Api;
+
+namespace WebShop.Api.Helpers;
 static class ModelDocumentationGenerator
 {
     public static DocumentationGenerationResult Generate(string dbPath, string outputPath)

@@ -1,7 +1,8 @@
 using WebShop.Api.Models;
 using WebShop.Contracts.Models;
+using WebShop.Api.Helpers;
 
-namespace WebShop.Api;
+namespace WebShop.Api.Routes;
 
 public static class UserRoutes
 {

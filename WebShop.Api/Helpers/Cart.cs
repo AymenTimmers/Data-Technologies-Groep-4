@@ -1,6 +1,6 @@
 using Microsoft.Data.Sqlite;
 
-namespace WebShop.Api;
+namespace WebShop.Api.Helpers;
 
 public static class Cart
 {

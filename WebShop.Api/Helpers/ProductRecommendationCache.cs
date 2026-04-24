@@ -1,7 +1,7 @@
 using Microsoft.Data.Sqlite;
 using WebShop.Contracts.Models;
 
-namespace WebShop.Api;
+namespace WebShop.Api.Helpers;
 
 public static class ProductRecommendationCache
 {

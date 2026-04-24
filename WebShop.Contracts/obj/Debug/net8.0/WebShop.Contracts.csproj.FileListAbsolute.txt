@@ -22,3 +22,15 @@ C:\Users\htimm\OneDrive\Documenten\GitHub\Data-Technologies-Groep-4\WebShop.Cont
 C:\Users\htimm\OneDrive\Documenten\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\obj\Debug\net8.0\refint\WebShop.Contracts.dll
 C:\Users\htimm\OneDrive\Documenten\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\obj\Debug\net8.0\WebShop.Contracts.pdb
 C:\Users\htimm\OneDrive\Documenten\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\obj\Debug\net8.0\ref\WebShop.Contracts.dll
+C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\bin\Debug\net8.0\WebShop.Contracts.deps.json
+C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\bin\Debug\net8.0\WebShop.Contracts.dll
+C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\bin\Debug\net8.0\WebShop.Contracts.pdb
+C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\obj\Debug\net8.0\WebShop.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\obj\Debug\net8.0\WebShop.Contracts.AssemblyInfoInputs.cache
+C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\obj\Debug\net8.0\WebShop.Contracts.AssemblyInfo.cs
+C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\obj\Debug\net8.0\WebShop.Contracts.csproj.CoreCompileInputs.cache
+C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\obj\Debug\net8.0\WebShop.Contracts.sourcelink.json
+C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\obj\Debug\net8.0\WebShop.Contracts.dll
+C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\obj\Debug\net8.0\refint\WebShop.Contracts.dll
+C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\obj\Debug\net8.0\WebShop.Contracts.pdb
+C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Contracts\obj\Debug\net8.0\ref\WebShop.Contracts.dll

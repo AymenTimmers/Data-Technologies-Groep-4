@@ -1,12 +1,7 @@
-using Microsoft.Data.Sqlite;
 using System.Diagnostics;
-using System.Net.Mail;
-using System.Security.Cryptography;
-using System.Text;
-using System.Linq;
-using WebShop.Api;
+using WebShop.Api.Helpers;
 using WebShop.Api.Models;
-using WebShop.Contracts.Models;
+using WebShop.Api.Routes;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuredUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");

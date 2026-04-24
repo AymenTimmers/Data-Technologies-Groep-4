@@ -1,6 +1,6 @@
 using System.Net.Mail;
 
-namespace WebShop.Api;
+namespace WebShop.Api.Helpers;
 
 public static class Input
 {
