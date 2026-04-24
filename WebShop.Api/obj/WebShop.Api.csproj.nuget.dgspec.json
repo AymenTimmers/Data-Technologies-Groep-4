@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\WebShop.Api.csproj": {}
+    "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\WebShop.Api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\WebShop.Api.csproj": {
+    "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\WebShop.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\WebShop.Api.csproj",
+        "projectUniqueName": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\WebShop.Api.csproj",
         "projectName": "WebShop.Api",
-        "projectPath": "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\WebShop.Api.csproj",
-        "packagesPath": "C:\\Users\\htimm\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\obj\\",
+        "projectPath": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\WebShop.Api.csproj",
+        "packagesPath": "C:\\Users\\Aymen\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\htimm\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Aymen\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -27,8 +27,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Contracts\\WebShop.Contracts.csproj": {
-                "projectPath": "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Contracts\\WebShop.Contracts.csproj"
+              "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Contracts\\WebShop.Contracts.csproj": {
+                "projectPath": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Contracts\\WebShop.Contracts.csproj"
               }
             }
           }
@@ -43,12 +43,16 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.72, )"
+            },
             "Microsoft.Data.Sqlite": {
               "target": "Package",
               "version": "[10.0.3, )"
@@ -68,19 +72,19 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.24, 8.0.24]"
+              "version": "[8.0.14, 8.0.14]"
             },
             {
               "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.24, 8.0.24]"
+              "version": "[8.0.14, 8.0.14]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.24, 8.0.24]"
+              "version": "[8.0.14, 8.0.14]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.24, 8.0.24]"
+              "version": "[8.0.14, 8.0.14]"
             }
           ],
           "frameworkReferences": {
@@ -91,21 +95,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Contracts\\WebShop.Contracts.csproj": {
+    "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Contracts\\WebShop.Contracts.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Contracts\\WebShop.Contracts.csproj",
+        "projectUniqueName": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Contracts\\WebShop.Contracts.csproj",
         "projectName": "WebShop.Contracts",
-        "projectPath": "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Contracts\\WebShop.Contracts.csproj",
-        "packagesPath": "C:\\Users\\htimm\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Contracts\\obj\\",
+        "projectPath": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Contracts\\WebShop.Contracts.csproj",
+        "packagesPath": "C:\\Users\\Aymen\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Contracts\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\htimm\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Aymen\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -130,7 +134,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -149,15 +153,15 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.24, 8.0.24]"
+              "version": "[8.0.14, 8.0.14]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.24, 8.0.24]"
+              "version": "[8.0.14, 8.0.14]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.24, 8.0.24]"
+              "version": "[8.0.14, 8.0.14]"
             }
           ],
           "frameworkReferences": {
@@ -165,7 +169,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
