@@ -251,3 +251,4 @@ C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Api\obj\Debug\
 C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Api\obj\Debug\net8.0\WebShop.Api.genruntimeconfig.cache
 C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Api\obj\Debug\net8.0\ref\WebShop.Api.dll
 C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260424081538.db
+C:\Users\Aymen\Documents\GitHub\Data-Technologies-Groep-4\WebShop.Api\bin\Debug\net8.0\Database\webshop.bak.20260424082425.db

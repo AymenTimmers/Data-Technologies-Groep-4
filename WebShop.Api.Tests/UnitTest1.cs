@@ -1,3 +1,5 @@
+using WebShop.Api.Helpers;
+
 namespace WebShop.Api.Tests;
 
 public class InputTests

@@ -1,4 +1,5 @@
 using Microsoft.Data.Sqlite;
+using WebShop.Api.Helpers;
 
 namespace WebShop.Api.Tests;
 
