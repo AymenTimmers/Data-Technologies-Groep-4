@@ -1,4 +1,3 @@
-WebShop/bin/
-WebShop/obj/
-Runner/obj/
-Runner/bin/
+# Negeert automatische file changes van vsc
+[Bb]in/
+[Oo]bj/
