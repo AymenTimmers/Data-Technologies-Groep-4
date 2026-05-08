@@ -1,3 +1,20 @@
 # Negeert automatische file changes van vsc
 [Bb]in/
 [Oo]bj/
+bin/Debug/net8.0/Data-Technologies.Runner.deps.json
+bin/Debug/net8.0/Data-Technologies.Runner.dll
+bin/Debug/net8.0/Data-Technologies.Runner.exe
+bin/Debug/net8.0/Data-Technologies.Runner.pdb
+bin/Debug/net8.0/Data-Technologies.Runner.runtimeconfig.json
+WebShop.Api/bin/Debug/net8.0/WebShop.Api.deps.json
+WebShop.Api/bin/Debug/net8.0/WebShop.Api.dll
+WebShop.Api/bin/Debug/net8.0/WebShop.Api.exe
+WebShop.Api/bin/Debug/net8.0/WebShop.Api.pdb
+WebShop.Api/bin/Debug/net8.0/WebShop.Api.staticwebassets.endpoints.json
+WebShop.Api/bin/Debug/net8.0/WebShop.Api.staticwebassets.runtime.json
+WebShop.Api/bin/Debug/net8.0/WebShop.Contracts.dll
+WebShop.Api/bin/Debug/net8.0/WebShop.Contracts.pdb
+WebShop.Api/Database/webshop.bak.20260508013658.db
+WebShop.Api/Logs/requests.log
+WebShop.Contracts/bin/Debug/net8.0/WebShop.Contracts.dll
+WebShop.Contracts/bin/Debug/net8.0/WebShop.Contracts.pdb
