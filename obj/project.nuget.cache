@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "yK3LKwTIa2o=",
+  "dgSpecHash": "qLN9oJC8Siw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\Data-Technologies.Runner.csproj",
+  "projectFilePath": "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\Data-Technologies.Runner.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Aymen\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.14\\microsoft.netcore.app.ref.8.0.14.nupkg.sha512",
-    "C:\\Users\\Aymen\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.14\\microsoft.windowsdesktop.app.ref.8.0.14.nupkg.sha512",
-    "C:\\Users\\Aymen\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.14\\microsoft.aspnetcore.app.ref.8.0.14.nupkg.sha512",
-    "C:\\Users\\Aymen\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.14\\microsoft.netcore.app.host.win-x64.8.0.14.nupkg.sha512"
+    "C:\\Users\\htimm\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.24\\microsoft.netcore.app.ref.8.0.24.nupkg.sha512",
+    "C:\\Users\\htimm\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.24\\microsoft.windowsdesktop.app.ref.8.0.24.nupkg.sha512",
+    "C:\\Users\\htimm\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.24\\microsoft.aspnetcore.app.ref.8.0.24.nupkg.sha512",
+    "C:\\Users\\htimm\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.24\\microsoft.netcore.app.host.win-x64.8.0.24.nupkg.sha512"
   ],
   "logs": []
 }
