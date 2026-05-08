@@ -1,0 +1,7 @@
+docker desktop openen
+redis container aanmaken met docker (1 malig): docker run -d --name webshop-redis -p 6379:6379 redis:7
+check of redis draait: docker ps
+pas daarna dotnet run de webshop api
+
+als de redis container al in docker staat kan je volgnende keer: docker start webshop-redis
+en stoppen met: docker stop webshop-redis
