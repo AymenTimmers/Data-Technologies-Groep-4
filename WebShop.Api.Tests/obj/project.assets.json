@@ -5909,19 +5909,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Aymen\\.nuget\\packages\\": {}
+    "C:\\Users\\htimm\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api.Tests\\WebShop.Api.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api.Tests\\WebShop.Api.Tests.csproj",
       "projectName": "WebShop.Api.Tests",
-      "projectPath": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api.Tests\\WebShop.Api.Tests.csproj",
-      "packagesPath": "C:\\Users\\Aymen\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api.Tests\\obj\\",
+      "projectPath": "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api.Tests\\WebShop.Api.Tests.csproj",
+      "packagesPath": "C:\\Users\\htimm\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Aymen\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\htimm\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -5934,8 +5934,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\WebShop.Api.csproj": {
-              "projectPath": "C:\\Users\\Aymen\\Documents\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\WebShop.Api.csproj"
+            "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\WebShop.Api.csproj": {
+              "projectPath": "C:\\Users\\htimm\\OneDrive\\Documenten\\GitHub\\Data-Technologies-Groep-4\\WebShop.Api\\WebShop.Api.csproj"
             }
           }
         }
@@ -5950,7 +5950,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net8.0": {
@@ -5987,15 +5987,15 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.14, 8.0.14]"
+            "version": "[8.0.24, 8.0.24]"
           },
           {
             "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.14, 8.0.14]"
+            "version": "[8.0.24, 8.0.24]"
           },
           {
             "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[8.0.14, 8.0.14]"
+            "version": "[8.0.24, 8.0.24]"
           }
         ],
         "frameworkReferences": {
@@ -6003,7 +6003,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
