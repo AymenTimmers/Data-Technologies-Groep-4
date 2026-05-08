@@ -5,3 +5,6 @@ pas daarna dotnet run de webshop api
 
 als de redis container al in docker staat kan je volgnende keer: docker start webshop-redis
 en stoppen met: docker stop webshop-redis
+
+redis package in webshop.api: dotnet add package StackExchange.Redis
+
