@@ -139,20 +139,6 @@ VALUES
 ('GAMER8', 8, 1, '2028-03-31', 80, 0),
 ('HOME10', 10, 1, '2027-10-31', 120, 0);
 
--- CART
-INSERT INTO carts (user_id)
-VALUES
-(1),
-(2);
-
--- CART ITEMS
-INSERT INTO cart_items (cart_id, product_id, quantity)
-VALUES
-(1, 1, 1),
-(1, 2, 2),
-(2, 10, 1),
-(2, 23, 1);
-
 -- FAVORITES
 INSERT INTO favorites (user_id, product_id)
 VALUES

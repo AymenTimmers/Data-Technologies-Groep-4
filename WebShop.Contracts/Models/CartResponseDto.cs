@@ -1,3 +1,3 @@
 namespace WebShop.Contracts.Models;
 
-public record CartResponseDto(long CartId, long UserId, List<CartItemDto> Items);
+public record CartResponseDto(long UserId, List<CartItemDto> Items, int? ExpiresInSeconds);
