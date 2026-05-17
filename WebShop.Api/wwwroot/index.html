@@ -161,10 +161,17 @@
 
   <aside id="cartDrawer" class="cart-drawer">
     <div class="cart-header">
-      <h3>Your Cart</h3>
-      <button id="closeCartBtn" class="btn btn-ghost">Close</button>
+      <div>
+        <h3>Your Cart</h3>
+        <p id="cartExpiryText" class="cart-expiry"></p>
+      </div>
+      <div class="cart-header-actions">
+        <button id="clearCartBtn" class="btn btn-ghost">Clear</button>
+        <button id="closeCartBtn" class="btn btn-ghost">Close</button>
+      </div>
     </div>
     <div id="cartItems" class="cart-items"></div>
+    <p id="cartStatusText" class="cart-status"></p>
     <div class="cart-footer">
       <input id="shippingInput" type="text" placeholder="Shipping address" />
       <input id="discountInput" type="text" placeholder="Discount code (optional)" />
@@ -192,6 +199,6 @@
     </article>
   </dialog>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=redis-cart-controls"></script>
 </body>
 </html>

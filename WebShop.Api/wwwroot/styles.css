@@ -401,9 +401,22 @@ input, select {
 }
 
 .cart-drawer.open { right: 0; }
-.cart-header { display: flex; justify-content: space-between; align-items: center; }
+.cart-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.cart-header h3 { margin-bottom: 4px; }
+.cart-header-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .cart-items { overflow: auto; margin: 10px 0; }
 .cart-item { border-bottom: 1px solid var(--line); padding: 10px 0; }
+.cart-item-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.cart-item-actions { margin-top: 8px; display: flex; gap: 8px; }
+.cart-expiry, .cart-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.cart-status {
+  min-height: 1.3em;
+  color: #8f412d;
+}
 .cart-total-row { display: flex; justify-content: space-between; margin: 12px 0; }
 
 .product-dialog {

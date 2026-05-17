@@ -33,6 +33,8 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
     return ConnectionMultiplexer.Connect(redisConnection);
 });
 
+builder.Services.AddSingleton<ICartStore, RedisCartStore>();
+
 var app = builder.Build();
 app.UseCors();
 
