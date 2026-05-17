@@ -1,2 +1,0 @@
--- Schema is split into per-table model files in this folder.
--- DbBootstrapper loads *.sql in alphabetical order.

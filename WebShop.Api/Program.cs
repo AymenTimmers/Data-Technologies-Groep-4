@@ -3,6 +3,8 @@ using WebShop.Api.Helpers;
 using WebShop.Api.Models;
 using WebShop.Api.Routes;
 
+using StackExchange.Redis;
+
 var builder = WebApplication.CreateBuilder(args);
 var configuredUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
 builder.WebHost.UseUrls(string.IsNullOrWhiteSpace(configuredUrls) ? "http://0.0.0.0:5088" : configuredUrls);
@@ -24,6 +26,14 @@ var databasePath = Path.Combine(databaseFolder, "webshop.db");
 DbBootstrapper.EnsureCreated(databasePath, databaseFolder);
 
 builder.Services.AddSingleton(new DbOptions(databasePath));
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
+{
+    var redisConnection = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
+    return ConnectionMultiplexer.Connect(redisConnection);
+});
+
+builder.Services.AddSingleton<ICartStore, RedisCartStore>();
 
 var app = builder.Build();
 app.UseCors();

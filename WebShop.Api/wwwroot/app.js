@@ -1,4 +1,6 @@
 const API_BASE = "";
+const USER_STORAGE_KEY = "webshopUser";
+
 
 const state = {
   user: null,
@@ -7,6 +9,7 @@ const state = {
   categories: [],
   featuredIndex: 0,
   cart: [],
+  cartExpiresAt: null,
   selectedProduct: null,
   activeCategoryChipId: null,
   activeCollection: null
@@ -25,6 +28,9 @@ const els = {
   cartDrawer: document.getElementById("cartDrawer"),
   cartItems: document.getElementById("cartItems"),
   cartTotal: document.getElementById("cartTotal"),
+  cartStatusText: document.getElementById("cartStatusText"),
+  cartExpiryText: document.getElementById("cartExpiryText"),
+  clearCartBtn: document.getElementById("clearCartBtn"),
   shippingInput: document.getElementById("shippingInput"),
   discountInput: document.getElementById("discountInput"),
   emailInput: document.getElementById("emailInput"),
@@ -54,12 +60,31 @@ initialize();
 
 async function initialize() {
   try {
+    const savedUser = localStorage.getItem(USER_STORAGE_KEY);
+    if (savedUser) {
+      state.user = JSON.parse(savedUser);
+      els.emailInput.value = state.user.email;
+      els.gateEmailInput.value = state.user.email;
+      showShop();
+    } else {
+      showGate();
+    }
+
     await Promise.all([loadCategories(), loadProducts()]);
+
+    if (state.user) {
+      await loadCartFromApi();
+    } else {
+      renderCart();
+    }
+
     renderFeatured();
-    renderCart();
     applyRoute();
     setStatus(`Loaded ${state.products.length} products.`);
   } catch (error) {
+    localStorage.removeItem(USER_STORAGE_KEY);
+    state.user = null;
+    showGate();
     setStatus(`Startup failed: ${error.message}`);
   }
 }
@@ -86,6 +111,7 @@ function bindEvents() {
     document.getElementById("catalog").scrollIntoView({ behavior: "smooth", block: "start" });
   });
   document.getElementById("checkoutBtn").addEventListener("click", onCheckout);
+  els.clearCartBtn.addEventListener("click", clearCart);
 
   document.getElementById("loginBtn").addEventListener("click", () => onLogin(false));
   document.getElementById("registerBtn").addEventListener("click", () => onRegister(false));
@@ -97,14 +123,12 @@ function bindEvents() {
   document.getElementById("dialogAddBtn").addEventListener("click", async () => {
     if (!state.selectedProduct) return;
     await addToCart(state.selectedProduct);
-    setStatus(`Added ${state.selectedProduct.name} to cart.`);
   });
 
   document.getElementById("productBackBtn").addEventListener("click", () => navigateHome());
   document.getElementById("routeAddToCartBtn").addEventListener("click", async () => {
     if (!state.selectedProduct) return;
     await addToCart(state.selectedProduct);
-    setStatus(`Added ${state.selectedProduct.name} to cart.`);
   });
   document.getElementById("routeOpenCartBtn").addEventListener("click", toggleCart);
 
@@ -135,6 +159,8 @@ function bindEvents() {
       rotateFeatured(1);
     }
   }, 5000);
+
+  setInterval(renderCartExpiry, 60000);
 }
 
 async function loadCategories() {
@@ -295,7 +321,6 @@ function renderProducts() {
       const product = findProductById(Number(button.dataset.add));
       if (product) {
         await addToCart(product);
-        setStatus(`Added ${product.name} to cart.`);
       }
     });
   }
@@ -460,26 +485,108 @@ async function openProductDialog(product) {
   }
 }
 
-async function addToCart(product) {
-  const existing = state.cart.find((item) => item.id === product.id);
-  if (existing) {
-    existing.quantity += 1;
-  } else {
-    state.cart.push({ id: product.id, name: product.name, price: product.price, quantity: 1 });
+async function loadCartFromApi() {
+  if (!state.user) {
+    state.cart = [];
+    state.cartExpiresAt = null;
+    renderCart();
+    return;
   }
+
+  const response = await fetch(`${API_BASE}/cart/${state.user.userId}`);
+  if (!response.ok) {
+    state.cart = [];
+    state.cartExpiresAt = null;
+    renderCart();
+    return;
+  }
+
+  const cart = await response.json();
+  state.cartExpiresAt = cart.expiresInSeconds
+    ? Date.now() + cart.expiresInSeconds * 1000
+    : null;
+  state.cart = cart.items.map((item) => ({
+    id: item.productId,
+    name: item.productName,
+    price: item.unitPrice,
+    quantity: item.quantity
+  }));
 
   renderCart();
+}
 
-  if (state.user) {
-    await fetch(`${API_BASE}/cart/items`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: state.user.userId, productId: product.id, quantity: 1 })
-    });
+async function addToCart(product) {
+  if (!state.user) {
+    setStatus("Sign in first to add items to your cart.");
+    return false;
   }
+
+  const response = await fetch(`${API_BASE}/cart/items`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId: state.user.userId, productId: product.id, quantity: 1 })
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+    setCartStatus(error?.message || "Could not add item to cart.");
+    await loadCartFromApi();
+    return false;
+  }
+
+  await loadCartFromApi();
+  setCartStatus(`Added ${product.name} to cart.`);
+  return true;
+}
+
+async function removeOneFromCart(productId) {
+  if (!state.user) {
+    setCartStatus("Sign in first to edit your cart.");
+    return;
+  }
+
+  const response = await fetch(`${API_BASE}/cart/items/${productId}?userId=${state.user.userId}`, {
+    method: "DELETE"
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+    setCartStatus(error?.message || "Could not remove item.");
+    await loadCartFromApi();
+    return;
+  }
+
+  await loadCartFromApi();
+  setCartStatus("Removed 1 item.");
+}
+
+async function clearCart() {
+  if (!state.user) {
+    state.cart = [];
+    state.cartExpiresAt = null;
+    renderCart();
+    return;
+  }
+
+  const response = await fetch(`${API_BASE}/cart/${state.user.userId}`, {
+    method: "DELETE"
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+    setCartStatus(error?.message || "Could not clear cart.");
+    return;
+  }
+
+  state.cart = [];
+  state.cartExpiresAt = null;
+  renderCart();
+  setCartStatus("Cart cleared.");
 }
 
 function renderCart() {
+  renderCartExpiry();
+
   if (state.cart.length === 0) {
     els.cartItems.innerHTML = "<p>Your cart is empty.</p>";
     els.cartTotal.textContent = "EUR 0.00";
@@ -492,10 +599,19 @@ function renderCart() {
     total += lineTotal;
     return `
       <div class="cart-item">
-        <strong>${escapeHtml(item.name)}</strong>
+        <div class="cart-item-top">
+          <strong>${escapeHtml(item.name)}</strong>
+          <button class="btn btn-ghost" data-remove-cart="${item.id}" title="Remove one">-1</button>
+        </div>
         <div>${item.quantity} x EUR ${item.price.toFixed(2)} = EUR ${lineTotal.toFixed(2)}</div>
       </div>`;
   }).join("");
+
+  for (const button of document.querySelectorAll("button[data-remove-cart]")) {
+    button.addEventListener("click", async () => {
+      await removeOneFromCart(Number(button.dataset.removeCart));
+    });
+  }
 
   els.cartTotal.textContent = `EUR ${total.toFixed(2)}`;
 }
@@ -531,10 +647,11 @@ async function onCheckout() {
   }
 
   state.cart = [];
+  state.cartExpiresAt = null;
   renderCart();
   els.shippingInput.value = "";
   els.discountInput.value = "";
-  setStatus("Checkout complete.");
+  setCartStatus("Checkout complete. Cart cleared.");
 }
 
 async function onLogin(useGate) {
@@ -559,11 +676,14 @@ async function onLogin(useGate) {
   }
 
   state.user = await response.json();
+  localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(state.user));
+
   els.emailInput.value = email;
   els.gateEmailInput.value = email;
   els.passwordInput.value = password;
   els.gatePasswordInput.value = password;
   showShop();
+  await loadCartFromApi();
   setStatus(`Signed in as ${state.user.email}.`);
   setGateStatus("Signed in.");
 }
@@ -596,9 +716,15 @@ async function onRegister(useGate) {
 }
 
 function onLogout() {
+  localStorage.removeItem(USER_STORAGE_KEY);
   state.user = null;
+  state.cart = [];
+  state.cartExpiresAt = null;
+
   els.passwordInput.value = "";
   els.gatePasswordInput.value = "";
+
+  renderCart();
   showGate();
   setStatus("Signed out.");
   setGateStatus("Signed out. Sign in to enter the webshop.");
@@ -635,6 +761,28 @@ function setStatus(text) {
 
 function setGateStatus(text) {
   els.gateStatusText.textContent = text;
+}
+
+function setCartStatus(text) {
+  els.cartStatusText.textContent = text;
+}
+
+function renderCartExpiry() {
+  if (!state.cartExpiresAt || state.cart.length === 0) {
+    els.cartExpiryText.textContent = "";
+    return;
+  }
+
+  const remainingMs = Math.max(0, state.cartExpiresAt - Date.now());
+  const totalMinutes = Math.ceil(remainingMs / 60000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (hours > 0) {
+    els.cartExpiryText.textContent = `Saved for ${hours}h ${minutes}m`;
+  } else {
+    els.cartExpiryText.textContent = `Saved for ${minutes}m`;
+  }
 }
 
 function showShop() {

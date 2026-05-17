@@ -8,7 +8,7 @@ public static class CartAndOrderRoutes
 {
     public static WebApplication MapCartAndOrderRoutes(this WebApplication app)
     {
-        app.MapGet("/cart/{userId:long}", (long userId, DbOptions db) =>
+        app.MapGet("/cart/{userId:long}", async (long userId, DbOptions db, ICartStore cartStore) =>
         {
             if (userId <= 0)
             {
@@ -21,34 +21,43 @@ public static class CartAndOrderRoutes
                 return Results.NotFound(new { message = "User not found." });
             }
 
-            var cartId = Cart.GetOrCreateCartId(connection, userId);
-
-            using var command = connection.CreateCommand();
-            command.CommandText = @"
-                SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity
-                FROM cart_items ci
-                INNER JOIN products p ON p.id = ci.product_id
-                WHERE ci.cart_id = @cartId
-                ORDER BY ci.id";
-            command.Parameters.AddWithValue("@cartId", cartId);
-
-            using var reader = command.ExecuteReader();
+            // cart komt als C# dictionary object
+            var redisCart = await cartStore.GetCartAsync(userId);
             var items = new List<CartItemDto>();
-            while (reader.Read())
+
+            foreach (var cartItem in redisCart)
             {
-                items.Add(new CartItemDto(
-                    reader.GetInt64(0),
-                    reader.GetInt64(1),
-                    reader.GetString(2),
-                    reader.GetDouble(3),
-                    reader.GetInt32(4)
-                ));
+                var productId = cartItem.Key;
+                var quantity = cartItem.Value;
+
+                using var command = connection.CreateCommand();
+                command.CommandText = @"
+                    SELECT name, price
+                    FROM products
+                    WHERE id = @productId";
+                command.Parameters.AddWithValue("@productId", productId);
+
+                using var reader = command.ExecuteReader();
+                if (!reader.Read())
+                {
+                    continue;
+                }
+
+                items.Add(new CartItemDto(productId, productId, reader.GetString(0), reader.GetDouble(1), quantity));
             }
 
-            return Results.Ok(new CartResponseDto(cartId, userId, items));
+            var ttl = await cartStore.GetCartTimeToLiveAsync(userId);
+            int? expiresInSeconds = null;
+
+            if (ttl.HasValue)
+            {
+                expiresInSeconds = Math.Max(0, (int)ttl.Value.TotalSeconds);
+            }
+
+            return Results.Ok(new{cartId = userId, userId, items, expiresInSeconds});
         });
 
-        app.MapPost("/cart/items", (AddCartItemRequest request, DbOptions db) =>
+        app.MapPost("/cart/items", async (AddCartItemRequest request, DbOptions db, ICartStore cartStore) =>
         {
             if (request.UserId <= 0 || request.ProductId <= 0)
             {
@@ -66,61 +75,40 @@ public static class CartAndOrderRoutes
                 return Results.NotFound(new { message = "User not found." });
             }
 
-            var cartId = Cart.GetOrCreateCartId(connection, request.UserId);
-
             using var productCommand = connection.CreateCommand();
-            productCommand.CommandText = "SELECT id, stock FROM products WHERE id = @productId";
+            productCommand.CommandText = "SELECT stock FROM products WHERE id = @productId";
             productCommand.Parameters.AddWithValue("@productId", request.ProductId);
+
             using var productReader = productCommand.ExecuteReader();
             if (!productReader.Read())
             {
                 return Results.NotFound(new { message = "Product not found." });
             }
 
-            var stock = productReader.GetInt32(1);
+            // product quantity check bij het toevoegen
+            var stock = productReader.GetInt32(0);
 
-            using var existingCommand = connection.CreateCommand();
-            existingCommand.CommandText = "SELECT id, quantity FROM cart_items WHERE cart_id = @cartId AND product_id = @productId";
-            existingCommand.Parameters.AddWithValue("@cartId", cartId);
-            existingCommand.Parameters.AddWithValue("@productId", request.ProductId);
+            var currentCart = await cartStore.GetCartAsync(request.UserId);
+            currentCart.TryGetValue(request.ProductId, out var currentQuantity);
 
-            using var reader = existingCommand.ExecuteReader();
-            if (reader.Read())
+            var newQuantityForThisUser = currentQuantity + request.Quantity;
+
+            var reservedByOtherUsers = await cartStore.GetReservedQuantityAsync(
+                request.ProductId,
+                excludingUserId: request.UserId
+            );
+
+            if (reservedByOtherUsers + newQuantityForThisUser > stock)
             {
-                var itemId = reader.GetInt64(0);
-                var existingQuantity = reader.GetInt32(1);
-                var newQuantity = existingQuantity + request.Quantity;
-
-                if (newQuantity > stock)
-                {
-                    return Results.BadRequest(new { message = "Requested quantity exceeds available stock." });
-                }
-
-                using var updateCommand = connection.CreateCommand();
-                updateCommand.CommandText = "UPDATE cart_items SET quantity = @quantity WHERE id = @id";
-                updateCommand.Parameters.AddWithValue("@quantity", newQuantity);
-                updateCommand.Parameters.AddWithValue("@id", itemId);
-                updateCommand.ExecuteNonQuery();
+                return Results.BadRequest(new { message = "Requested quantity exceeds available stock." });
             }
-            else
-            {
-                if (request.Quantity > stock)
-                {
-                    return Results.BadRequest(new { message = "Requested quantity exceeds available stock." });
-                }
 
-                using var insertCommand = connection.CreateCommand();
-                insertCommand.CommandText = "INSERT INTO cart_items (cart_id, product_id, quantity) VALUES (@cartId, @productId, @quantity)";
-                insertCommand.Parameters.AddWithValue("@cartId", cartId);
-                insertCommand.Parameters.AddWithValue("@productId", request.ProductId);
-                insertCommand.Parameters.AddWithValue("@quantity", request.Quantity);
-                insertCommand.ExecuteNonQuery();
-            }
+            await cartStore.AddItemAsync(request.UserId, request.ProductId, request.Quantity);
 
             return Results.Ok(new { message = "Cart updated." });
         });
 
-        app.MapDelete("/cart/items/{itemId:long}", (long itemId, long userId, DbOptions db) =>
+        app.MapDelete("/cart/items/{itemId:long}", async (long itemId, long userId, DbOptions db, ICartStore cartStore) =>
         {
             if (itemId <= 0 || userId <= 0)
             {
@@ -133,19 +121,31 @@ public static class CartAndOrderRoutes
                 return Results.NotFound(new { message = "User not found." });
             }
 
-            using var command = connection.CreateCommand();
-            command.CommandText = @"
-                DELETE FROM cart_items
-                WHERE id = @itemId
-                  AND cart_id = (SELECT id FROM carts WHERE user_id = @userId LIMIT 1)";
-            command.Parameters.AddWithValue("@itemId", itemId);
-            command.Parameters.AddWithValue("@userId", userId);
-            var rows = command.ExecuteNonQuery();
+            var productId = itemId;
+            await cartStore.DecrementItemAsync(userId, productId);
 
-            return rows == 0 ? Results.NotFound() : Results.Ok(new { message = "Item removed." });
+            return Results.Ok(new { message = "Item removed." });
         });
 
-        app.MapPost("/orders/checkout", (CheckoutRequest request, DbOptions db) =>
+        app.MapDelete("/cart/{userId:long}", async (long userId, DbOptions db, ICartStore cartStore) =>
+        {
+            if (userId <= 0)
+            {
+                return Results.BadRequest(new { message = "User id must be greater than 0." });
+            }
+
+            using var connection = Db.CreateOpenConnection(db.DatabasePath);
+            if (!Db.UserExists(connection, userId))
+            {
+                return Results.NotFound(new { message = "User not found." });
+            }
+
+            await cartStore.ClearCartAsync(userId);
+
+            return Results.Ok(new { message = "Cart cleared." });
+        });
+
+        app.MapPost("/orders/checkout", async (CheckoutRequest request, DbOptions db, ICartStore cartStore) =>
         {
             if (request.UserId <= 0)
             {
@@ -178,6 +178,7 @@ public static class CartAndOrderRoutes
                     WHERE id = @addressId AND user_id = @userId";
                 addressCommand.Parameters.AddWithValue("@addressId", request.ShippingAddressId.Value);
                 addressCommand.Parameters.AddWithValue("@userId", request.UserId);
+
                 var selectedAddress = addressCommand.ExecuteScalar() as string;
                 if (string.IsNullOrWhiteSpace(selectedAddress))
                 {
@@ -187,28 +188,26 @@ public static class CartAndOrderRoutes
                 shippingAddress = selectedAddress;
             }
 
-            var cartId = Cart.GetOrCreateCartId(connection, request.UserId);
-
-            using var cartItemsCommand = connection.CreateCommand();
-            cartItemsCommand.CommandText = @"
-                SELECT ci.product_id, ci.quantity, p.price, p.stock
-                FROM cart_items ci
-                INNER JOIN products p ON p.id = ci.product_id
-                WHERE ci.cart_id = @cartId";
-            cartItemsCommand.Parameters.AddWithValue("@cartId", cartId);
+            // checkout items vanuit de redis cart nu
+            var redisCart = await cartStore.GetCartAsync(request.UserId);
 
             var checkoutItems = new List<(long ProductId, int Quantity, double UnitPrice, int Stock)>();
-            using (var reader = cartItemsCommand.ExecuteReader())
+            foreach (var cartItem in redisCart)
             {
-                while (reader.Read())
+                using var productCommand = connection.CreateCommand();
+                productCommand.CommandText = @"
+                    SELECT price, stock
+                    FROM products
+                    WHERE id = @productId";
+                productCommand.Parameters.AddWithValue("@productId", cartItem.Key);
+
+                using var reader = productCommand.ExecuteReader();
+                if (!reader.Read())
                 {
-                    checkoutItems.Add((
-                        reader.GetInt64(0),
-                        reader.GetInt32(1),
-                        reader.GetDouble(2),
-                        reader.GetInt32(3)
-                    ));
+                    return Results.BadRequest(new { message = $"Product {cartItem.Key} no longer exists." });
                 }
+
+                checkoutItems.Add((cartItem.Key, cartItem.Value, reader.GetDouble(0), reader.GetInt32(1)));
             }
 
             if (checkoutItems.Count == 0)
@@ -233,11 +232,11 @@ public static class CartAndOrderRoutes
             {
                 using var discountCommand = connection.CreateCommand();
                 discountCommand.CommandText = @"
-                                SELECT id, discount_percentage, max_uses, uses_count
+                    SELECT id, discount_percentage, max_uses, uses_count
                     FROM discount_codes
                     WHERE code = @code
-                      AND active = 1
-                      AND date(valid_until) >= date('now')";
+                    AND active = 1
+                    AND date(valid_until) >= date('now')";
                 discountCommand.Parameters.AddWithValue("@code", request.DiscountCode.Trim().ToUpperInvariant());
 
                 using var reader = discountCommand.ExecuteReader();
@@ -247,6 +246,7 @@ public static class CartAndOrderRoutes
                     discountPercent = reader.GetInt32(1);
                     var maxUses = reader.GetInt32(2);
                     var usesCount = reader.GetInt32(3);
+
                     if (usesCount >= maxUses)
                     {
                         return Results.BadRequest(new { message = "Discount code has reached its usage limit." });
@@ -319,13 +319,9 @@ public static class CartAndOrderRoutes
                 incrementDiscount.ExecuteNonQuery();
             }
 
-            using var clearCartCommand = connection.CreateCommand();
-            clearCartCommand.Transaction = transaction;
-            clearCartCommand.CommandText = "DELETE FROM cart_items WHERE cart_id = @cartId";
-            clearCartCommand.Parameters.AddWithValue("@cartId", cartId);
-            clearCartCommand.ExecuteNonQuery();
-
             transaction.Commit();
+
+            await cartStore.ClearCartAsync(request.UserId);
 
             return Results.Ok(new { orderId, orderNumber, totalPrice = total });
         });
