@@ -48,12 +48,6 @@ public static class AuthRoutes
 
             var userId = Convert.ToInt64(userCommand.ExecuteScalar());
 
-            using var cartCommand = connection.CreateCommand();
-            cartCommand.Transaction = transaction;
-            cartCommand.CommandText = "INSERT INTO carts (user_id) VALUES (@userId)";
-            cartCommand.Parameters.AddWithValue("@userId", userId);
-            cartCommand.ExecuteNonQuery();
-
             transaction.Commit();
 
             return Results.Created($"/users/{userId}", new { userId, email = normalizedEmail, role = 0 });

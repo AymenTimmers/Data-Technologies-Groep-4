@@ -43,7 +43,7 @@ public static class CartAndOrderRoutes
                     continue;
                 }
 
-                items.Add(new CartItemDto(productId, productId, reader.GetString(0), reader.GetDouble(1), quantity));
+                items.Add(new CartItemDto(productId, reader.GetString(0), reader.GetDouble(1), quantity));
             }
 
             var ttl = await cartStore.GetCartTimeToLiveAsync(userId);
@@ -54,7 +54,7 @@ public static class CartAndOrderRoutes
                 expiresInSeconds = Math.Max(0, (int)ttl.Value.TotalSeconds);
             }
 
-            return Results.Ok(new{cartId = userId, userId, items, expiresInSeconds});
+            return Results.Ok(new CartResponseDto(userId, items, expiresInSeconds));
         });
 
         app.MapPost("/cart/items", async (AddCartItemRequest request, DbOptions db, ICartStore cartStore) =>
@@ -108,11 +108,11 @@ public static class CartAndOrderRoutes
             return Results.Ok(new { message = "Cart updated." });
         });
 
-        app.MapDelete("/cart/items/{itemId:long}", async (long itemId, long userId, DbOptions db, ICartStore cartStore) =>
+        app.MapDelete("/cart/items/{productId:long}", async (long productId, long userId, DbOptions db, ICartStore cartStore) =>
         {
-            if (itemId <= 0 || userId <= 0)
+            if (productId <= 0 || userId <= 0)
             {
-                return Results.BadRequest(new { message = "Item id and user id must be greater than 0." });
+                return Results.BadRequest(new { message = "Product id and user id must be greater than 0." });
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
@@ -121,7 +121,6 @@ public static class CartAndOrderRoutes
                 return Results.NotFound(new { message = "User not found." });
             }
 
-            var productId = itemId;
             await cartStore.DecrementItemAsync(userId, productId);
 
             return Results.Ok(new { message = "Item removed." });

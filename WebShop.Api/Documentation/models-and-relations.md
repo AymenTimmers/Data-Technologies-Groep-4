@@ -2,29 +2,6 @@
 
 Generated at: 2026-03-27 09:38:05 UTC
 
-## cart_items
-
-| Column | Type | Not Null | PK | Default |
-|---|---|---|---|---|
-| id | INTEGER | No | Yes |  |
-| cart_id | INTEGER | Yes | No |  |
-| product_id | INTEGER | Yes | No |  |
-| quantity | INTEGER | Yes | No |  |
-
-Relations:
-- cart_items.product_id -> products.id
-- cart_items.cart_id -> carts.id
-
-## carts
-
-| Column | Type | Not Null | PK | Default |
-|---|---|---|---|---|
-| id | INTEGER | No | Yes |  |
-| user_id | INTEGER | Yes | No |  |
-
-Relations:
-- carts.user_id -> users.id
-
 ## categories
 
 | Column | Type | Not Null | PK | Default |
@@ -141,16 +118,6 @@ Relations:
 
 ```mermaid
 erDiagram
-  cart_items {
-    INTEGER id PK
-    INTEGER cart_id FK
-    INTEGER product_id FK
-    INTEGER quantity
-  }
-  carts {
-    INTEGER id PK
-    INTEGER user_id FK
-  }
   categories {
     INTEGER id PK
     TEXT name
@@ -214,9 +181,6 @@ erDiagram
     TEXT last_name
     INTEGER role
   }
-  products ||--o{ cart_items : "product_id->id"
-  carts ||--o{ cart_items : "cart_id->id"
-  users ||--o{ carts : "user_id->id"
   products ||--o{ favorites : "product_id->id"
   users ||--o{ favorites : "user_id->id"
   products ||--o{ order_items : "product_id->id"
