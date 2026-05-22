@@ -9,7 +9,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: webshop-api
-  IMAGE_NAMESPACE: abid2001
+  IMAGE_NAMESPACE: aymentimmers
 
 jobs:
   build-test:
