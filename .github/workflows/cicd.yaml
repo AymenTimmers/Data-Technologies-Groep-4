@@ -65,7 +65,7 @@ jobs:
       - name: Deploy by building locally
         run: |
           set -e
-          cd /home/DataTech/webshop
+          cd webshop
           docker compose build
           docker compose up -d
           docker image prune -f
