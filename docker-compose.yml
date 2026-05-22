@@ -1,0 +1,10 @@
+services:
+  webshop:
+    image: ghcr.io/abid2001/webshop-api:latest
+    container_name: webshop-app
+    ports:
+      - "80:5088"
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5088
+      - ASPNETCORE_ENVIRONMENT=Production
+    restart: always
