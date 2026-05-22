@@ -1,7 +1,6 @@
 services:
   webshop:
-    image: ghcr.io/abid2001/webshop-api:latest
-    container_name: webshop-app
+    image: ghcr.io/aymentimmers/webshop-api:latest
     ports:
       - "80:5088"
     environment:
