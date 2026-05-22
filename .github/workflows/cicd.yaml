@@ -56,7 +56,7 @@ jobs:
 
   deploy:
     name: Manual Deploy
-    runs-on: self-hosted
+    runs-on: [self-hosted, linux, x64]
     needs: docker-build-push
 
     steps:
