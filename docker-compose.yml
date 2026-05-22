@@ -2,7 +2,7 @@ services:
   webshop:
     image: ghcr.io/aymentimmers/webshop-api:latest
     ports:
-      - "80:5088"
+      - "8080:5088"
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5088
       - ASPNETCORE_ENVIRONMENT=Production
