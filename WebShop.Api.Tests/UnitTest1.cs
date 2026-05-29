@@ -98,7 +98,6 @@ public class ProductRecommendationCacheTests
             TestDataHelper.SafeDeleteTestDatabase(dbPath);
         }
     }
-    */
 
     [Fact]
     public async Task RefreshIfNeeded_WithoutForceAndFreshCache_SkipsRefresh()
@@ -126,6 +125,7 @@ public class ProductRecommendationCacheTests
             TestDataHelper.SafeDeleteTestDatabase(dbPath);
         }
     }
+    */
 
     private static void CreateTestDatabase(string dbPath)
     {
