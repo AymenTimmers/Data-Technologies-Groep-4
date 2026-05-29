@@ -450,3 +450,19 @@
 2026-05-16 17:57:39.824 UTC | GET /cart/1 | status=200 | elapsedMs=1
 2026-05-16 18:30:01.232 UTC | POST /auth/login | status=200 | elapsedMs=1
 2026-05-16 18:30:01.238 UTC | GET /cart/1 | status=200 | elapsedMs=2
+2026-05-29 10:52:31.441 UTC | GET /index.html | status=200 | elapsedMs=24
+2026-05-29 10:52:31.459 UTC | GET /styles.css | status=200 | elapsedMs=7
+2026-05-29 10:52:31.475 UTC | GET /app.js?v=redis-cart-controls | status=200 | elapsedMs=23
+2026-05-29 10:52:31.664 UTC | GET /favicon.ico | status=404 | elapsedMs=0
+2026-05-29 10:52:31.745 UTC | GET /categories | status=200 | elapsedMs=186
+2026-05-29 10:52:31.748 UTC | GET /products | status=200 | elapsedMs=189
+2026-05-29 10:52:45.888 UTC | POST /auth/register | status=201 | elapsedMs=19
+2026-05-29 10:52:46.952 UTC | POST /auth/login | status=200 | elapsedMs=1
+2026-05-29 10:52:55.251 UTC | GET /cart/5 | status=200 | elapsedMs=8297 | error=It was not possible to connect to the redis server(s). Error connecting right now. To allow this multiplexer to continue retrying until it's able to connect, use abortConnect=false in your connection string or AbortOnConnectFail=false; in your code.
+2026-05-29 10:53:08.626 UTC | GET /products/1/reviews | status=200 | elapsedMs=14
+2026-05-29 10:53:18.062 UTC | GET /products/2/reviews | status=200 | elapsedMs=0
+2026-05-29 10:53:20.251 UTC | GET /products/3/reviews | status=200 | elapsedMs=0
+2026-05-29 10:53:22.220 UTC | GET /products/2/reviews | status=200 | elapsedMs=0
+2026-05-29 10:53:26.864 UTC | GET /products/4/reviews | status=200 | elapsedMs=2
+2026-05-29 10:53:28.318 UTC | GET /products/5/reviews | status=200 | elapsedMs=0
+2026-05-29 10:53:29.782 UTC | GET /products/6/reviews | status=200 | elapsedMs=0

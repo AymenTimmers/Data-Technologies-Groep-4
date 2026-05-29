@@ -4,6 +4,7 @@ using WebShop.Api.Models;
 using WebShop.Api.Routes;
 
 using StackExchange.Redis;
+using SQLitePCL;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuredUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
@@ -29,8 +30,15 @@ builder.Services.AddSingleton(new DbOptions(databasePath));
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
 {
-    var redisConnection = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
-    return ConnectionMultiplexer.Connect(redisConnection);
+    try
+    {
+        var redisConnection = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
+        return ConnectionMultiplexer.Connect(redisConnection);
+    } catch(Exception ex)
+    {
+        Console.WriteLine("Caught exception while connecting to redis:", ex.Message);
+        return null!;
+    }
 });
 
 builder.Services.AddSingleton<ICartStore, RedisCartStore>();
@@ -45,7 +53,7 @@ var documentationFolder = Path.Combine(builder.Environment.ContentRootPath, "Doc
 Directory.CreateDirectory(documentationFolder);
 
 // Initialize recommendations cache
-ProductRecommendationCache.RefreshIfNeeded(databasePath, forceRefresh: true);
+await ProductRecommendationCache.RefreshIfNeeded(databasePath, forceRefresh: true);
 
 app.Use(async (context, next) =>
 {
