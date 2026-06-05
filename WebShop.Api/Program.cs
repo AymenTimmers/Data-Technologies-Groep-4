@@ -2,9 +2,7 @@ using System.Diagnostics;
 using WebShop.Api.Helpers;
 using WebShop.Api.Models;
 using WebShop.Api.Routes;
-
 using StackExchange.Redis;
-using SQLitePCL;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuredUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
@@ -30,21 +28,31 @@ builder.Services.AddSingleton(new DbOptions(databasePath));
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
 {
+    var redisConnection =
+        builder.Configuration.GetConnectionString("Redis")
+        ?? "145.24.223.151:6379";
+
     try
     {
-        var redisConnection = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
-        return ConnectionMultiplexer.Connect(redisConnection);
-    } catch(Exception ex)
+        var mux = ConnectionMultiplexer.Connect(redisConnection);
+        Console.WriteLine($"Redis connected: {redisConnection}");
+        return mux;
+    }
+    catch (Exception ex)
     {
-        Console.WriteLine("Caught exception while connecting to redis:", ex.Message);
-        return null!;
+        Console.WriteLine($"Redis connection failed: {ex}");
+        throw;
     }
 });
 
 builder.Services.AddSingleton<ICartStore, RedisCartStore>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 app.UseCors();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 var logFolder = Path.Combine(builder.Environment.ContentRootPath, "Logs");
 Directory.CreateDirectory(logFolder);

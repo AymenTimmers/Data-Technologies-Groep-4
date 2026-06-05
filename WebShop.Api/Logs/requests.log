@@ -466,3 +466,40 @@
 2026-05-29 10:53:26.864 UTC | GET /products/4/reviews | status=200 | elapsedMs=2
 2026-05-29 10:53:28.318 UTC | GET /products/5/reviews | status=200 | elapsedMs=0
 2026-05-29 10:53:29.782 UTC | GET /products/6/reviews | status=200 | elapsedMs=0
+2026-06-05 07:21:08.665 UTC | GET /index.html | status=200 | elapsedMs=57
+2026-06-05 07:21:08.715 UTC | GET /styles.css | status=200 | elapsedMs=18
+2026-06-05 07:21:08.775 UTC | GET /app.js?v=redis-cart-controls | status=200 | elapsedMs=79
+2026-06-05 07:21:09.121 UTC | GET /favicon.ico | status=404 | elapsedMs=0
+2026-06-05 07:21:09.289 UTC | GET /categories | status=200 | elapsedMs=452
+2026-06-05 07:21:09.301 UTC | GET /products | status=200 | elapsedMs=464
+2026-06-05 07:21:35.628 UTC | POST /auth/login | status=401 | elapsedMs=19
+2026-06-05 07:24:30.408 UTC | GET /products | status=200 | elapsedMs=4
+2026-06-05 07:24:30.408 UTC | GET /categories | status=200 | elapsedMs=0
+2026-06-05 07:24:36.025 UTC | POST /auth/login | status=401 | elapsedMs=1
+2026-06-05 07:24:37.167 UTC | POST /auth/register | status=201 | elapsedMs=32
+2026-06-05 07:24:37.630 UTC | POST /auth/login | status=200 | elapsedMs=3
+2026-06-05 07:24:46.058 UTC | GET /cart/6 | status=200 | elapsedMs=8422 | error=Object reference not set to an instance of an object.
+2026-06-05 07:24:52.264 UTC | GET /products/1/reviews | status=200 | elapsedMs=26
+2026-06-05 07:24:58.318 UTC | POST /cart/items | status=200 | elapsedMs=17023 | error=Object reference not set to an instance of an object.
+2026-06-05 07:25:10.576 UTC | POST /cart/items | status=200 | elapsedMs=28398 | error=Object reference not set to an instance of an object.
+2026-06-05 07:25:22.833 UTC | POST /cart/items | status=200 | elapsedMs=32032 | error=Object reference not set to an instance of an object.
+2026-06-05 07:25:35.095 UTC | POST /cart/items | status=200 | elapsedMs=41585 | error=Object reference not set to an instance of an object.
+2026-06-05 07:25:47.349 UTC | GET /cart/6 | status=200 | elapsedMs=49018 | error=Object reference not set to an instance of an object.
+2026-06-05 07:25:59.623 UTC | GET /cart/6 | status=200 | elapsedMs=29026 | error=Object reference not set to an instance of an object.
+2026-06-05 07:26:11.882 UTC | GET /cart/6 | status=200 | elapsedMs=29025 | error=Object reference not set to an instance of an object.
+2026-06-05 07:26:24.164 UTC | GET /cart/6 | status=200 | elapsedMs=36808 | error=Object reference not set to an instance of an object.
+2026-06-05 07:33:18.531 UTC | GET /index.html | status=304 | elapsedMs=9
+2026-06-05 07:33:18.663 UTC | GET /categories | status=200 | elapsedMs=60
+2026-06-05 07:33:18.668 UTC | GET /products | status=200 | elapsedMs=64
+2026-06-05 07:33:26.763 UTC | POST /cart/items | status=200 | elapsedMs=13308 | error=Object reference not set to an instance of an object.
+2026-06-05 07:33:39.007 UTC | GET /cart/6 | status=200 | elapsedMs=20327 | error=Object reference not set to an instance of an object.
+2026-06-05 07:40:38.496 UTC | GET /index.html | status=304 | elapsedMs=5
+2026-06-05 07:40:38.648 UTC | GET /categories | status=200 | elapsedMs=74
+2026-06-05 07:40:38.654 UTC | GET /products | status=200 | elapsedMs=80
+2026-06-05 07:40:46.992 UTC | GET /cart/6 | status=200 | elapsedMs=8328 | error=It was not possible to connect to the redis server(s). Error connecting right now. To allow this multiplexer to continue retrying until it's able to connect, use abortConnect=false in your connection string or AbortOnConnectFail=false; in your code.
+2026-06-05 07:40:59.263 UTC | POST /cart/items | status=200 | elapsedMs=18413 | error=It was not possible to connect to the redis server(s). Error connecting right now. To allow this multiplexer to continue retrying until it's able to connect, use abortConnect=false in your connection string or AbortOnConnectFail=false; in your code.
+2026-06-05 07:41:11.558 UTC | GET /cart/6 | status=200 | elapsedMs=12284 | error=It was not possible to connect to the redis server(s). Error connecting right now. To allow this multiplexer to continue retrying until it's able to connect, use abortConnect=false in your connection string or AbortOnConnectFail=false; in your code.
+2026-06-05 07:44:43.293 UTC | GET /index.html | status=200 | elapsedMs=11
+2026-06-05 07:44:43.406 UTC | GET /categories | status=200 | elapsedMs=63
+2026-06-05 07:44:43.414 UTC | GET /products | status=200 | elapsedMs=70
+2026-06-05 07:44:51.708 UTC | GET /cart/6 | status=200 | elapsedMs=8285 | error=It was not possible to connect to the redis server(s). Error connecting right now. To allow this multiplexer to continue retrying until it's able to connect, use abortConnect=false in your connection string or AbortOnConnectFail=false; in your code.

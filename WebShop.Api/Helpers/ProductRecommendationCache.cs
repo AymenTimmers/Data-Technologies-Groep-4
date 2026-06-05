@@ -12,16 +12,35 @@ public static class ProductRecommendationCache
     private const int CACHE_HOURS = 24;
 
     // Neo4j config
-    private const string NEO4J_URI = "bolt://localhost:7687";
+    private const string NEO4J_URI = "bolt://145.24.223.151:7687";
     private const string NEO4J_USER = "neo4j";
     private const string NEO4J_PASSWORD = "password123";
 
-    private static readonly IDriver _driver = GraphDatabase.Driver(
-        NEO4J_URI,
-        AuthTokens.Basic(NEO4J_USER, NEO4J_PASSWORD)
-    );
+    private static readonly IDriver? _driver;
 
     public static DateTime LastCacheTime => _lastCacheTime;
+
+    static ProductRecommendationCache()
+    {
+        try
+        {
+            _driver = GraphDatabase.Driver(
+                NEO4J_URI,
+                AuthTokens.Basic(NEO4J_USER, NEO4J_PASSWORD)
+            );
+
+            using var session = _driver.AsyncSession();
+            session.RunAsync("RETURN 1").Wait();
+
+            Console.WriteLine("Neo4j connected successfully.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Neo4j connection failed: {ex}");
+
+            _driver = null;
+        }
+    }
 
     public static async Task RefreshIfNeeded(string dbPath, bool forceRefresh = false)
     {
