@@ -6,4 +6,5 @@ services:
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5088
       - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__Redis=redis:6379
     restart: always
