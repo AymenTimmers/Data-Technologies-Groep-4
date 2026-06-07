@@ -47,13 +47,16 @@ public class InputTests
     }
 
     [Fact]
-    public void HashPassword_SameInput_ProducesSameHash()
+    public void HashPassword_SameInput_CanBeVerified()
     {
-        var hash1 = Security.HashPassword("password123");
-        var hash2 = Security.HashPassword("password123");
+        var plainPassword = "password123";
+        var hash = Security.HashPassword(plainPassword);
 
-        Assert.Equal(hash1, hash2);
-        Assert.NotEmpty(hash1);
+        // Bcrypt produces different hashes for the same password (different salts),
+        // but we should be able to verify the password against the hash
+        var isVerified = Security.VerifyPassword(plainPassword, hash);
+        Assert.True(isVerified);
+        Assert.NotEmpty(hash);
     }
 }
 

@@ -8,8 +8,19 @@ public static class UserRoutes
 {
     public static WebApplication MapUserRoutes(this WebApplication app)
     {
-        app.MapGet("/users/{userId:long}/shipping-addresses", (long userId, DbOptions db) =>
+        app.MapGet("/users/{userId:long}/shipping-addresses", (long userId, HttpContext context, DbOptions db) =>
         {
+            // Check authentication and authorization
+            if (!context.IsAuthenticated())
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!context.CanAccessUserData((int)userId))
+            {
+                return Results.Forbid();
+            }
+
             if (userId <= 0)
             {
                 return Results.BadRequest(new { message = "User id must be greater than 0." });
@@ -43,10 +54,21 @@ public static class UserRoutes
             }
 
             return Results.Ok(addresses);
-        });
+        }).RequireAuthorization();
 
-        app.MapPost("/users/{userId:long}/shipping-addresses", (long userId, CreateShippingAddressRequest request, DbOptions db) =>
+        app.MapPost("/users/{userId:long}/shipping-addresses", (long userId, CreateShippingAddressRequest request, HttpContext context, DbOptions db) =>
         {
+            // Check authentication and authorization
+            if (!context.IsAuthenticated())
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!context.CanAccessUserData((int)userId))
+            {
+                return Results.Forbid();
+            }
+
             if (userId <= 0)
             {
                 return Results.BadRequest(new { message = "User id must be greater than 0." });
@@ -98,7 +120,7 @@ public static class UserRoutes
                 shippingAddress,
                 request.SetAsDefault
             ));
-        });
+        }).RequireAuthorization();
 
         app.MapDelete("/users/{userId:long}/shipping-addresses/{addressId:long}", (long userId, long addressId, DbOptions db) =>
         {

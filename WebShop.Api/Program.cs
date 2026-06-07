@@ -1,4 +1,7 @@
 using System.Diagnostics;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using WebShop.Api.Helpers;
 using WebShop.Api.Models;
 using WebShop.Api.Routes;
@@ -25,6 +28,54 @@ var databasePath = Path.Combine(databaseFolder, "webshop.db");
 DbBootstrapper.EnsureCreated(databasePath, databaseFolder);
 
 builder.Services.AddSingleton(new DbOptions(databasePath));
+
+// Initialize encryption service
+var encryptionKeyBase64 = Environment.GetEnvironmentVariable("ENCRYPTION_KEY");
+if (string.IsNullOrEmpty(encryptionKeyBase64))
+{
+    throw new InvalidOperationException(
+        "ENCRYPTION_KEY environment variable must be set. " +
+        "Generate one with: EncryptionService.GenerateEncryptionKey()");
+}
+builder.Services.AddSingleton(new EncryptionService(encryptionKeyBase64));
+
+// Initialize backup service
+var backupDirectory = Path.Combine(databaseFolder, "backups");
+builder.Services.AddSingleton(new BackupService(databasePath, backupDirectory));
+
+// Initialize JWT service
+var jwtSecretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
+if (string.IsNullOrEmpty(jwtSecretKey) || jwtSecretKey.Length < 32)
+{
+    throw new InvalidOperationException(
+        "JWT_SECRET_KEY environment variable must be set with at least 32 characters. " +
+        "Generate one with: JwtService.GenerateSecretKey()");
+}
+builder.Services.AddSingleton(new JwtService(jwtSecretKey));
+
+// Configure JWT authentication
+var key = Encoding.UTF8.GetBytes(jwtSecretKey);
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = true,
+        ValidIssuer = "webshop",
+        ValidateAudience = true,
+        ValidAudience = "webshop-api",
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
+    };
+});
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
 {
@@ -53,6 +104,8 @@ var app = builder.Build();
 app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseAuthentication();
+app.UseAuthorization();
 
 var logFolder = Path.Combine(builder.Environment.ContentRootPath, "Logs");
 Directory.CreateDirectory(logFolder);
