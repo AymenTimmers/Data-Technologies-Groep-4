@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using WebShop.Api.Models;
 using WebShop.Contracts.Models;
 using WebShop.Api.Helpers;
@@ -8,11 +9,16 @@ public static class CartAndOrderRoutes
 {
     public static WebApplication MapCartAndOrderRoutes(this WebApplication app)
     {
-        app.MapGet("/cart/{userId:long}", async (long userId, DbOptions db, ICartStore cartStore) =>
+        app.MapGet("/cart/{userId:long}", async (long userId, ClaimsPrincipal user, DbOptions db, ICartStore cartStore) =>
         {
             if (userId <= 0)
             {
                 return Results.BadRequest(new { message = "User id must be greater than 0." });
+            }
+
+            if (user.GetUserId() != userId && !user.IsInRole("Admin"))
+            {
+                return Results.Forbid();
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
@@ -54,13 +60,15 @@ public static class CartAndOrderRoutes
             }
 
             return Results.Ok(new CartResponseDto(userId, items, expiresInSeconds));
-        });
+        }).RequireAuthorization();
 
-        app.MapPost("/cart/items", async (AddCartItemRequest request, DbOptions db, ICartStore cartStore) =>
+        app.MapPost("/cart/items", async (AddCartItemRequest request, ClaimsPrincipal user, DbOptions db, ICartStore cartStore) =>
         {
-            if (request.UserId <= 0 || request.ProductId <= 0)
+            var userId = user.GetUserId();
+
+            if (request.ProductId <= 0)
             {
-                return Results.BadRequest(new { message = "User id and product id must be greater than 0." });
+                return Results.BadRequest(new { message = "Product id must be greater than 0." });
             }
 
             if (request.Quantity <= 0 || request.Quantity > 100)
@@ -69,7 +77,7 @@ public static class CartAndOrderRoutes
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
-            if (!Db.UserExists(connection, request.UserId))
+            if (!Db.UserExists(connection, userId))
             {
                 return Results.NotFound(new { message = "User not found." });
             }
@@ -86,14 +94,14 @@ public static class CartAndOrderRoutes
 
             var stock = productReader.GetInt32(0);
 
-            var currentCart = await cartStore.GetCartAsync(request.UserId);
+            var currentCart = await cartStore.GetCartAsync(userId);
             currentCart.TryGetValue(request.ProductId, out var currentQuantity);
 
             var newQuantityForThisUser = currentQuantity + request.Quantity;
 
             var reservedByOtherUsers = await cartStore.GetReservedQuantityAsync(
                 request.ProductId,
-                excludingUserId: request.UserId
+                excludingUserId: userId
             );
 
             if (reservedByOtherUsers + newQuantityForThisUser > stock)
@@ -101,17 +109,19 @@ public static class CartAndOrderRoutes
                 return Results.BadRequest(new { message = "Requested quantity exceeds available stock." });
             }
 
-            await cartStore.AddItemAsync(request.UserId, request.ProductId, request.Quantity);
+            await cartStore.AddItemAsync(userId, request.ProductId, request.Quantity);
 
             return Results.Ok(new { message = "Cart updated." });
-        });
+        }).RequireAuthorization();
 
-        app.MapDelete("/cart/items/{productId:long}", async (long productId, long userId, DbOptions db, ICartStore cartStore) =>
+        app.MapDelete("/cart/items/{productId:long}", async (long productId, ClaimsPrincipal user, DbOptions db, ICartStore cartStore) =>
         {
-            if (productId <= 0 || userId <= 0)
+            if (productId <= 0)
             {
-                return Results.BadRequest(new { message = "Product id and user id must be greater than 0." });
+                return Results.BadRequest(new { message = "Product id must be greater than 0." });
             }
+
+            var userId = user.GetUserId();
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
             if (!Db.UserExists(connection, userId))
@@ -122,13 +132,18 @@ public static class CartAndOrderRoutes
             await cartStore.DecrementItemAsync(userId, productId);
 
             return Results.Ok(new { message = "Item removed." });
-        });
+        }).RequireAuthorization();
 
-        app.MapDelete("/cart/{userId:long}", async (long userId, DbOptions db, ICartStore cartStore) =>
+        app.MapDelete("/cart/{userId:long}", async (long userId, ClaimsPrincipal user, DbOptions db, ICartStore cartStore) =>
         {
             if (userId <= 0)
             {
                 return Results.BadRequest(new { message = "User id must be greater than 0." });
+            }
+
+            if (user.GetUserId() != userId && !user.IsInRole("Admin"))
+            {
+                return Results.Forbid();
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
@@ -140,14 +155,11 @@ public static class CartAndOrderRoutes
             await cartStore.ClearCartAsync(userId);
 
             return Results.Ok(new { message = "Cart cleared." });
-        });
+        }).RequireAuthorization();
 
-        app.MapPost("/orders/checkout", async (CheckoutRequest request, DbOptions db, ICartStore cartStore) =>
+        app.MapPost("/orders/checkout", async (CheckoutRequest request, ClaimsPrincipal user, DbOptions db, ICartStore cartStore) =>
         {
-            if (request.UserId <= 0)
-            {
-                return Results.BadRequest(new { message = "User id must be greater than 0." });
-            }
+            var userId = user.GetUserId();
 
             var shippingAddress = request.ShippingAddress?.Trim();
             if (request.ShippingAddressId is null && (string.IsNullOrWhiteSpace(shippingAddress) || shippingAddress.Length > 250))
@@ -161,7 +173,7 @@ public static class CartAndOrderRoutes
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
-            if (!Db.UserExists(connection, request.UserId))
+            if (!Db.UserExists(connection, userId))
             {
                 return Results.NotFound(new { message = "User not found." });
             }
@@ -174,7 +186,7 @@ public static class CartAndOrderRoutes
                     FROM user_shipping_addresses
                     WHERE id = @addressId AND user_id = @userId";
                 addressCommand.Parameters.AddWithValue("@addressId", request.ShippingAddressId.Value);
-                addressCommand.Parameters.AddWithValue("@userId", request.UserId);
+                addressCommand.Parameters.AddWithValue("@userId", userId);
 
                 var selectedAddress = addressCommand.ExecuteScalar() as string;
                 if (string.IsNullOrWhiteSpace(selectedAddress))
@@ -185,7 +197,7 @@ public static class CartAndOrderRoutes
                 shippingAddress = selectedAddress;
             }
 
-            var redisCart = await cartStore.GetCartAsync(request.UserId);
+            var redisCart = await cartStore.GetCartAsync(userId);
 
             var checkoutItems = new List<(long ProductId, int Quantity, double UnitPrice, int Stock)>();
             foreach (var cartItem in redisCart)
@@ -263,7 +275,7 @@ public static class CartAndOrderRoutes
                 INSERT INTO orders (user_id, order_number, total_price, shipping_address, discount_code_id)
                 VALUES (@userId, @orderNumber, @totalPrice, @shippingAddress, @discountCodeId);
                 SELECT last_insert_rowid();";
-            orderCommand.Parameters.AddWithValue("@userId", request.UserId);
+            orderCommand.Parameters.AddWithValue("@userId", userId);
             orderCommand.Parameters.AddWithValue("@orderNumber", orderNumber);
             orderCommand.Parameters.AddWithValue("@totalPrice", total);
             orderCommand.Parameters.AddWithValue("@shippingAddress", shippingAddress!);
@@ -317,16 +329,21 @@ public static class CartAndOrderRoutes
 
             transaction.Commit();
 
-            await cartStore.ClearCartAsync(request.UserId);
+            await cartStore.ClearCartAsync(userId);
 
             return Results.Ok(new { orderId, orderNumber, totalPrice = total });
-        });
+        }).RequireAuthorization();
 
-        app.MapGet("/orders/{userId:long}", (long userId, DbOptions db) =>
+        app.MapGet("/orders/{userId:long}", (long userId, ClaimsPrincipal user, DbOptions db) =>
         {
             if (userId <= 0)
             {
                 return Results.BadRequest(new { message = "User id must be greater than 0." });
+            }
+
+            if (user.GetUserId() != userId && !user.IsInRole("Admin"))
+            {
+                return Results.Forbid();
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
@@ -380,7 +397,7 @@ public static class CartAndOrderRoutes
             }
 
             return Results.Ok(orders);
-        });
+        }).RequireAuthorization();
 
         return app;
     }

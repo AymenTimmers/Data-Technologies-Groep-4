@@ -1,14 +1,17 @@
 using System.Diagnostics;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver;
+using StackExchange.Redis;
 using WebShop.Api.Helpers;
 using WebShop.Api.Models;
 using WebShop.Api.Routes;
 
-using MongoDB.Driver;
-using StackExchange.Redis;
-
 var builder = WebApplication.CreateBuilder(args);
 var configuredUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
 builder.WebHost.UseUrls(string.IsNullOrWhiteSpace(configuredUrls) ? "http://0.0.0.0:5088" : configuredUrls);
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -20,6 +23,29 @@ builder.Services.AddCors(options =>
     });
 });
 
+var jwtSecret = builder.Configuration["Jwt:Secret"]
+    ?? throw new InvalidOperationException("Jwt:Secret is not configured.");
+var jwtExpiryHours = int.TryParse(builder.Configuration["Jwt:ExpiryHours"], out var h) ? h : 24;
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+});
+
 var databaseFolder = Path.Combine(builder.Environment.ContentRootPath, "Database");
 Directory.CreateDirectory(databaseFolder);
 var databasePath = Path.Combine(databaseFolder, "webshop.db");
@@ -27,6 +53,7 @@ var databasePath = Path.Combine(databaseFolder, "webshop.db");
 DbBootstrapper.EnsureCreated(databasePath, databaseFolder);
 
 builder.Services.AddSingleton(new DbOptions(databasePath));
+builder.Services.AddSingleton(new JwtOptions(jwtSecret, jwtExpiryHours));
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
 {
@@ -44,6 +71,8 @@ builder.Services.AddSingleton(sp =>
 
 var app = builder.Build();
 app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
 
 var logFolder = Path.Combine(builder.Environment.ContentRootPath, "Logs");
 Directory.CreateDirectory(logFolder);
@@ -51,7 +80,6 @@ var requestLogPath = Path.Combine(logFolder, "requests.log");
 var documentationFolder = Path.Combine(builder.Environment.ContentRootPath, "Documentation");
 Directory.CreateDirectory(documentationFolder);
 
-// Initialize recommendations cache
 ProductRecommendationCache.RefreshIfNeeded(databasePath, forceRefresh: true);
 
 var mongoLogger = app.Services.GetRequiredService<MongoRequestLogger>();

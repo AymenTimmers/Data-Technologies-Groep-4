@@ -16,7 +16,7 @@ public static class SystemRoutes
                 message = "Recommendations cache refreshed.",
                 refreshedAt = ProductRecommendationCache.LastCacheTime
             });
-        });
+        }).RequireAuthorization("Admin");
 
         app.MapPost("/docs/models/generate", (DbOptions db) =>
         {
@@ -31,29 +31,18 @@ public static class SystemRoutes
                 tableCount = result.TableCount,
                 relationCount = result.RelationCount
             });
-        });
+        }).RequireAuthorization("Admin");
 
-        app.MapGet("/admin/logs", async (long adminUserId, DbOptions db, MongoRequestLogger mongoLogger, int limit = 100) =>
+        app.MapGet("/admin/logs", async (MongoRequestLogger mongoLogger, int limit = 100) =>
         {
-            if (adminUserId <= 0)
-            {
-                return Results.BadRequest(new { message = "Admin user id must be greater than 0." });
-            }
-
             if (limit < 1 || limit > 1000)
             {
                 return Results.BadRequest(new { message = "Limit must be between 1 and 1000." });
             }
 
-            using var connection = Db.CreateOpenConnection(db.DatabasePath);
-            if (!Db.IsAdmin(connection, adminUserId))
-            {
-                return Results.Unauthorized();
-            }
-
             var logs = await mongoLogger.GetRecentAsync(limit);
             return Results.Ok(logs);
-        });
+        }).RequireAuthorization("Admin");
 
         return app;
     }

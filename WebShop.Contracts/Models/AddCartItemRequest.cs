@@ -1,3 +1,3 @@
 namespace WebShop.Contracts.Models;
 
-public record AddCartItemRequest(long UserId, long ProductId, int Quantity);
+public record AddCartItemRequest(long ProductId, int Quantity);

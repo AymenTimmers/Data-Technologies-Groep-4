@@ -8,7 +8,7 @@ public static class AuthRoutes
 {
     public static WebApplication MapAuthRoutes(this WebApplication app)
     {
-        app.MapPost("/auth/register", (RegisterRequest request, DbOptions db) =>
+        app.MapPost("/auth/register", (RegisterRequest request, DbOptions db, JwtOptions jwt) =>
         {
             if (!Input.TryNormalizeEmail(request.Email, out var normalizedEmail))
             {
@@ -47,13 +47,13 @@ public static class AuthRoutes
             userCommand.Parameters.AddWithValue("@lastName", (object?)lastName ?? DBNull.Value);
 
             var userId = Convert.ToInt64(userCommand.ExecuteScalar());
-
             transaction.Commit();
 
-            return Results.Created($"/users/{userId}", new { userId, email = normalizedEmail, role = 0 });
+            var token = Security.GenerateToken(userId, 0, jwt.Secret, jwt.ExpiryHours);
+            return Results.Created($"/users/{userId}", new AuthResponse(userId, normalizedEmail, 0, token));
         });
 
-        app.MapPost("/auth/login", (LoginRequest request, DbOptions db) =>
+        app.MapPost("/auth/login", (LoginRequest request, DbOptions db, JwtOptions jwt) =>
         {
             if (!Input.TryNormalizeEmail(request.Email, out var normalizedEmail) || string.IsNullOrWhiteSpace(request.Password))
             {
@@ -75,11 +75,12 @@ public static class AuthRoutes
                 return Results.Unauthorized();
             }
 
-            return Results.Ok(new AuthResponse(
-                reader.GetInt64(0),
-                reader.GetString(1),
-                reader.GetInt32(2)
-            ));
+            var userId = reader.GetInt64(0);
+            var email = reader.GetString(1);
+            var role = reader.GetInt32(2);
+            var token = Security.GenerateToken(userId, role, jwt.Secret, jwt.ExpiryHours);
+
+            return Results.Ok(new AuthResponse(userId, email, role, token));
         });
 
         return app;

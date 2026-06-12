@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using WebShop.Api.Models;
 using WebShop.Contracts.Models;
 using WebShop.Api.Helpers;
@@ -8,21 +9,11 @@ public static class AdminRoutes
 {
     public static WebApplication MapAdminRoutes(this WebApplication app)
     {
-        app.MapGet("/admin/users/search", (long adminUserId, string? query, DbOptions db) =>
+        app.MapGet("/admin/users/search", (string? query, ClaimsPrincipal user, DbOptions db) =>
         {
-            if (adminUserId <= 0)
-            {
-                return Results.BadRequest(new { message = "Admin user id must be greater than 0." });
-            }
-
-            using var connection = Db.CreateOpenConnection(db.DatabasePath);
-            if (!Db.IsAdmin(connection, adminUserId))
-            {
-                return Results.Unauthorized();
-            }
-
             var q = string.IsNullOrWhiteSpace(query) ? null : $"%{query.Trim()}%";
 
+            using var connection = Db.CreateOpenConnection(db.DatabasePath);
             using var command = connection.CreateCommand();
             command.CommandText = @"
                 SELECT id, email, first_name, last_name, role
@@ -49,20 +40,16 @@ public static class AdminRoutes
             }
 
             return Results.Ok(users);
-        });
+        }).RequireAuthorization("Admin");
 
-        app.MapGet("/admin/users/{userId:long}", (long userId, long adminUserId, DbOptions db) =>
+        app.MapGet("/admin/users/{userId:long}", (long userId, DbOptions db) =>
         {
-            if (userId <= 0 || adminUserId <= 0)
+            if (userId <= 0)
             {
-                return Results.BadRequest(new { message = "User id and admin user id must be greater than 0." });
+                return Results.BadRequest(new { message = "User id must be greater than 0." });
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
-            if (!Db.IsAdmin(connection, adminUserId))
-            {
-                return Results.Unauthorized();
-            }
 
             using var userCommand = connection.CreateCommand();
             userCommand.CommandText = @"
@@ -167,15 +154,10 @@ public static class AdminRoutes
                 shippingAddresses,
                 orders
             ));
-        });
+        }).RequireAuthorization("Admin");
 
         app.MapPost("/admin/discount-codes/random", (CreateRandomDiscountCodeRequest request, DbOptions db) =>
         {
-            if (request.AdminUserId <= 0)
-            {
-                return Results.BadRequest(new { message = "Admin user id must be greater than 0." });
-            }
-
             if (request.DiscountPercentage < 1 || request.DiscountPercentage > 90)
             {
                 return Results.BadRequest(new { message = "Discount percentage must be between 1 and 90." });
@@ -192,10 +174,6 @@ public static class AdminRoutes
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
-            if (!Db.IsAdmin(connection, request.AdminUserId))
-            {
-                return Results.Unauthorized();
-            }
 
             var validUntil = validUntilDate.Date.ToString("yyyy-MM-dd");
             string code;
@@ -232,7 +210,7 @@ public static class AdminRoutes
                 request.MaxUses,
                 0
             ));
-        });
+        }).RequireAuthorization("Admin");
 
         return app;
     }

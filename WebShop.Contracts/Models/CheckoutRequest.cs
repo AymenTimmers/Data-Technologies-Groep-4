@@ -1,3 +1,3 @@
 namespace WebShop.Contracts.Models;
 
-public record CheckoutRequest(long UserId, string? ShippingAddress, string? DiscountCode, long? ShippingAddressId = null);
+public record CheckoutRequest(string? ShippingAddress, string? DiscountCode, long? ShippingAddressId = null);

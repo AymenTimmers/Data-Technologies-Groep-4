@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Dapper;
 using WebShop.Api.Models;
 using WebShop.Contracts.Models;
@@ -106,13 +107,15 @@ public static class CatalogRoutes
             return Results.Ok(reviews);
         });
 
-        app.MapPost("/products/{id:long}/reviews", async (long id, CreateProductReviewRequest request, DbOptions db) =>
+        app.MapPost("/products/{id:long}/reviews", async (long id, CreateProductReviewRequest request, ClaimsPrincipal user, DbOptions db) =>
         {
-            if (id <= 0 || request.UserId <= 0) return Results.BadRequest(new { message = "Invalid IDs." });
+            if (id <= 0) return Results.BadRequest(new { message = "Invalid product ID." });
             if (request.Stars < 1 || request.Stars > 5) return Results.BadRequest(new { message = "Stars 1-5." });
 
+            var userId = user.GetUserId();
+
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
-            
+
             const string sql = @"
                 INSERT INTO product_ratings (user_id, product_id, rating, explanation, created_at)
                 VALUES (@UserId, @ProductId, @Rating, @Explanation, datetime('now'))
@@ -121,15 +124,15 @@ public static class CatalogRoutes
                     explanation = excluded.explanation,
                     created_at = datetime('now');";
 
-            await connection.ExecuteAsync(sql, new { 
-                UserId = request.UserId, 
-                ProductId = id, 
-                Rating = request.Stars, 
-                Explanation = request.Explanation 
+            await connection.ExecuteAsync(sql, new {
+                UserId = userId,
+                ProductId = id,
+                Rating = request.Stars,
+                Explanation = request.Explanation
             });
 
             return Results.Ok(new { message = "Review saved." });
-        });
+        }).RequireAuthorization();
 
         app.MapGet("/products/{id:long}/recommendations", (long id, DbOptions db) =>
         {
