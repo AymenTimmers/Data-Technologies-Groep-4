@@ -7,7 +7,7 @@ namespace WebShop.Api.Helpers;
 public class ProductRecommendationCache
 {
     private readonly IDriver _driver;
-
+    
     private readonly Dictionary<long, List<ProductRecommendedDto>> _recommendations = new();
     private DateTime _lastCacheTime = DateTime.MinValue;
 
