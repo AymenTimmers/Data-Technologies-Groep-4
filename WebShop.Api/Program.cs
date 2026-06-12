@@ -24,7 +24,8 @@ builder.Services.AddCors(options =>
 });
 
 var jwtSecret = builder.Configuration["Jwt:Secret"]
-    ?? throw new InvalidOperationException("Jwt:Secret is not configured.");
+    ?? Environment.GetEnvironmentVariable("JWT_SECRET")
+    ?? throw new InvalidOperationException("JWT secret is not configured. Set Jwt:Secret in user-secrets or JWT_SECRET as an environment variable.");
 var jwtExpiryHours = int.TryParse(builder.Configuration["Jwt:ExpiryHours"], out var h) ? h : 24;
 
 builder.Services
