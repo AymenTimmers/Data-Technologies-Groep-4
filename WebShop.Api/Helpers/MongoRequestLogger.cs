@@ -28,7 +28,9 @@ public class MongoRequestLogger
             ErrorMessage = string.IsNullOrWhiteSpace(errorMessage) ? null : errorMessage
         };
 
-        _collection.InsertOne(doc);
+        _ = _collection.InsertOneAsync(doc).ContinueWith(
+            t => Console.Error.WriteLine($"[MongoRequestLogger] Failed to write log: {t.Exception?.GetBaseException().Message}"),
+            TaskContinuationOptions.OnlyOnFaulted);
     }
 
     public async Task<List<MongoRequestLog>> GetRecentAsync(int limit = 100)
