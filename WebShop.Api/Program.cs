@@ -3,6 +3,7 @@ using WebShop.Api.Helpers;
 using WebShop.Api.Models;
 using WebShop.Api.Routes;
 
+using MongoDB.Driver;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +36,12 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
 
 builder.Services.AddSingleton<ICartStore, RedisCartStore>();
 
+var mongoConnectionString = builder.Configuration.GetConnectionString("MongoDB") ?? "mongodb://localhost:27017";
+var mongoDatabaseName = builder.Configuration["MongoDB:DatabaseName"] ?? "webshop";
+builder.Services.AddSingleton<IMongoClient>(_ => new MongoClient(mongoConnectionString));
+builder.Services.AddSingleton(sp =>
+    new MongoRequestLogger(sp.GetRequiredService<IMongoClient>(), mongoDatabaseName));
+
 var app = builder.Build();
 app.UseCors();
 
@@ -46,6 +53,8 @@ Directory.CreateDirectory(documentationFolder);
 
 // Initialize recommendations cache
 ProductRecommendationCache.RefreshIfNeeded(databasePath, forceRefresh: true);
+
+var mongoLogger = app.Services.GetRequiredService<MongoRequestLogger>();
 
 app.Use(async (context, next) =>
 {
@@ -64,14 +73,9 @@ app.Use(async (context, next) =>
     finally
     {
         start.Stop();
-        RequestFileLogger.Append(
-            requestLogPath,
-            context.Request.Method,
-            $"{context.Request.Path}{context.Request.QueryString}",
-            context.Response.StatusCode,
-            start.ElapsedMilliseconds,
-            errorMessage
-        );
+        var path = $"{context.Request.Path}{context.Request.QueryString}";
+        RequestFileLogger.Append(requestLogPath, context.Request.Method, path, context.Response.StatusCode, start.ElapsedMilliseconds, errorMessage);
+        mongoLogger.Append(context.Request.Method, path, context.Response.StatusCode, start.ElapsedMilliseconds, errorMessage);
     }
 });
 

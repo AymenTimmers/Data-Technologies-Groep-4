@@ -33,6 +33,17 @@ public static class SystemRoutes
             });
         });
 
+        app.MapGet("/admin/logs", async (MongoRequestLogger mongoLogger, int limit = 100) =>
+        {
+            if (limit < 1 || limit > 1000)
+            {
+                return Results.BadRequest(new { message = "Limit must be between 1 and 1000." });
+            }
+
+            var logs = await mongoLogger.GetRecentAsync(limit);
+            return Results.Ok(logs);
+        });
+
         return app;
     }
 }

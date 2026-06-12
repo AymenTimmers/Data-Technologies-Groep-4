@@ -131,7 +131,7 @@ public static class CatalogRoutes
             return Results.Ok(new { message = "Review saved." });
         });
 
-        app.MapGet("/products/{id:long}/recommendations", async (long id, DbOptions db) =>
+        app.MapGet("/products/{id:long}/recommendations", (long id, DbOptions db) =>
         {
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
 

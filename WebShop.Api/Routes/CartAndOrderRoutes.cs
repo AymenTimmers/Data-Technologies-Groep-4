@@ -21,7 +21,6 @@ public static class CartAndOrderRoutes
                 return Results.NotFound(new { message = "User not found." });
             }
 
-            // cart komt als C# dictionary object
             var redisCart = await cartStore.GetCartAsync(userId);
             var items = new List<CartItemDto>();
 
@@ -85,7 +84,6 @@ public static class CartAndOrderRoutes
                 return Results.NotFound(new { message = "Product not found." });
             }
 
-            // product quantity check bij het toevoegen
             var stock = productReader.GetInt32(0);
 
             var currentCart = await cartStore.GetCartAsync(request.UserId);
@@ -187,7 +185,6 @@ public static class CartAndOrderRoutes
                 shippingAddress = selectedAddress;
             }
 
-            // checkout items vanuit de redis cart nu
             var redisCart = await cartStore.GetCartAsync(request.UserId);
 
             var checkoutItems = new List<(long ProductId, int Quantity, double UnitPrice, int Stock)>();
