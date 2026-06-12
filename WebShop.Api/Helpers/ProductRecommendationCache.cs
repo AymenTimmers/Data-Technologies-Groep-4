@@ -4,45 +4,23 @@ using WebShop.Contracts.Models;
 
 namespace WebShop.Api.Helpers;
 
-public static class ProductRecommendationCache
+public class ProductRecommendationCache
 {
-    private static Dictionary<long, List<ProductRecommendedDto>> _recommendations = new();
-    private static DateTime _lastCacheTime = DateTime.MinValue;
+    private readonly IDriver _driver;
+
+    private readonly Dictionary<long, List<ProductRecommendedDto>> _recommendations = new();
+    private DateTime _lastCacheTime = DateTime.MinValue;
 
     private const int CACHE_HOURS = 24;
 
-    // Neo4j config
-    private const string NEO4J_URI = "bolt://145.24.223.151:7687";
-    private const string NEO4J_USER = "neo4j";
-    private const string NEO4J_PASSWORD = "password123";
+    public DateTime LastCacheTime => _lastCacheTime;
 
-    private static readonly IDriver? _driver;
-
-    public static DateTime LastCacheTime => _lastCacheTime;
-
-    static ProductRecommendationCache()
+    public ProductRecommendationCache(IDriver driver)
     {
-        try
-        {
-            _driver = GraphDatabase.Driver(
-                NEO4J_URI,
-                AuthTokens.Basic(NEO4J_USER, NEO4J_PASSWORD)
-            );
-
-            using var session = _driver.AsyncSession();
-            session.RunAsync("RETURN 1").Wait();
-
-            Console.WriteLine("Neo4j connected successfully.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Neo4j connection failed: {ex}");
-
-            _driver = null;
-        }
+        _driver = driver;
     }
 
-    public static async Task RefreshIfNeeded(string dbPath, bool forceRefresh = false)
+    public async Task RefreshIfNeeded(string dbPath, bool forceRefresh = false)
     {
         var timeSinceLastCache = DateTime.UtcNow - _lastCacheTime;
 
@@ -55,11 +33,11 @@ public static class ProductRecommendationCache
         await RefreshCacheFromNeo4j();
     }
 
-    private static async Task SyncSqliteToNeo4j(SqliteConnection sqliteConnection)
+    private async Task SyncSqliteToNeo4j(SqliteConnection sqliteConnection)
     {
         await using var session = _driver.AsyncSession();
 
-        // Clear graph (simple school-project approach)
+        // Clear graph
         await session.RunAsync("MATCH (n) DETACH DELETE n");
 
         // -------------------------
@@ -85,14 +63,17 @@ public static class ProductRecommendationCache
                         stock: $stock,
                         description: $description
                     })
-                ", new
+                ",
+                new
                 {
                     id = reader.GetInt64(0),
                     categoryId = reader.GetInt64(1),
                     name = reader.GetString(2),
                     price = reader.GetDouble(3),
                     stock = reader.GetInt32(4),
-                    description = reader.IsDBNull(5) ? "" : reader.GetString(5)
+                    description = reader.IsDBNull(5)
+                        ? string.Empty
+                        : reader.GetString(5)
                 });
             }
         }
@@ -109,8 +90,14 @@ public static class ProductRecommendationCache
             while (reader.Read())
             {
                 await session.RunAsync(@"
-                    CREATE (o:Order { id: $id })
-                ", new { id = reader.GetInt64(0) });
+                    CREATE (o:Order {
+                        id: $id
+                    })
+                ",
+                new
+                {
+                    id = reader.GetInt64(0)
+                });
             }
         }
 
@@ -119,7 +106,10 @@ public static class ProductRecommendationCache
         // -------------------------
         using (var command = sqliteConnection.CreateCommand())
         {
-            command.CommandText = @"SELECT order_id, product_id FROM order_items";
+            command.CommandText = @"
+                SELECT order_id, product_id
+                FROM order_items
+            ";
 
             using var reader = command.ExecuteReader();
 
@@ -129,7 +119,8 @@ public static class ProductRecommendationCache
                     MATCH (o:Order {id: $orderId})
                     MATCH (p:Product {id: $productId})
                     CREATE (o)-[:CONTAINS]->(p)
-                ", new
+                ",
+                new
                 {
                     orderId = reader.GetInt64(0),
                     productId = reader.GetInt64(1)
@@ -138,7 +129,7 @@ public static class ProductRecommendationCache
         }
     }
 
-    private static async Task RefreshCacheFromNeo4j()
+    private async Task RefreshCacheFromNeo4j()
     {
         _recommendations.Clear();
 
@@ -151,9 +142,9 @@ public static class ProductRecommendationCache
 
         var productIds = new List<long>();
 
-        await productResult.ForEachAsync(r =>
+        await productResult.ForEachAsync(record =>
         {
-            productIds.Add(r["id"].As<long>());
+            productIds.Add(record["id"].As<long>());
         });
 
         foreach (var productId in productIds)
@@ -161,8 +152,11 @@ public static class ProductRecommendationCache
             var recommendations = new List<ProductRecommendedDto>();
 
             var result = await session.RunAsync(@"
-                MATCH (:Product {id: $productId})<-[:CONTAINS]-(o:Order)-[:CONTAINS]->(recommended:Product)
+                MATCH (:Product {id: $productId})
+                      <-[:CONTAINS]-(o:Order)
+                      -[:CONTAINS]->(recommended:Product)
                 WHERE recommended.id <> $productId
+
                 RETURN
                     recommended.id AS id,
                     recommended.name AS name,
@@ -170,33 +164,42 @@ public static class ProductRecommendationCache
                     recommended.stock AS stock,
                     recommended.description AS description,
                     COUNT(*) AS score
+
                 ORDER BY score DESC
                 LIMIT 10
-            ", new { productId });
-
-            await result.ForEachAsync(r =>
+            ",
+            new
             {
-                recommendations.Add(new ProductRecommendedDto(
-                    r["id"].As<long>(),
-                    r["name"].As<string>(),
-                    r["price"].As<double>(),
-                    r["stock"].As<int>(),
-                    r["description"].As<string>(),
-                    r["score"].As<int>()
-                ));
+                productId
+            });
+
+            await result.ForEachAsync(record =>
+            {
+                recommendations.Add(
+                    new ProductRecommendedDto(
+                        record["id"].As<long>(),
+                        record["name"].As<string>(),
+                        record["price"].As<double>(),
+                        record["stock"].As<int>(),
+                        record["description"].As<string>(),
+                        record["score"].As<int>()
+                    )
+                );
             });
 
             if (recommendations.Count > 0)
+            {
                 _recommendations[productId] = recommendations;
+            }
         }
 
         _lastCacheTime = DateTime.UtcNow;
     }
 
-    public static List<ProductRecommendedDto> GetRecommendations(long productId)
+    public List<ProductRecommendedDto> GetRecommendations(long productId)
     {
-        return _recommendations.TryGetValue(productId, out var recs)
-            ? recs
+        return _recommendations.TryGetValue(productId, out var recommendations)
+            ? recommendations
             : new List<ProductRecommendedDto>();
     }
 }

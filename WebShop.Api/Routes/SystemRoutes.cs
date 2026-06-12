@@ -3,18 +3,24 @@ using WebShop.Api.Helpers;
 
 namespace WebShop.Api.Routes;
 
-public static class SystemRoutes
+public class SystemRoutes
 {
-    public static WebApplication MapSystemRoutes(this WebApplication app, string documentationFolder)
+    private ProductRecommendationCache _recommendationCache;
+    public SystemRoutes(ProductRecommendationCache recommendationCache)
     {
-        app.MapPost("/cache/recommendations/refresh", (DbOptions db) =>
+        _recommendationCache = recommendationCache;
+    }
+
+    public void MapSystemRoutes(WebApplication app, string documentationFolder)
+    {
+        app.MapPost("/cache/recommendations/refresh", async (DbOptions db) =>
         {
-            ProductRecommendationCache.RefreshIfNeeded(db.DatabasePath, forceRefresh: true);
+            await _recommendationCache.RefreshIfNeeded(db.DatabasePath, forceRefresh: true);
 
             return Results.Ok(new
             {
                 message = "Recommendations cache refreshed.",
-                refreshedAt = ProductRecommendationCache.LastCacheTime
+                refreshedAt = _recommendationCache.LastCacheTime
             });
         });
 
@@ -32,7 +38,5 @@ public static class SystemRoutes
                 relationCount = result.RelationCount
             });
         });
-
-        return app;
     }
 }

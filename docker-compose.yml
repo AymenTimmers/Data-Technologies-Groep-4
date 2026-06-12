@@ -7,4 +7,55 @@ services:
       - ASPNETCORE_URLS=http://0.0.0.0:5088
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__Redis=redis:6379
+      - ConnectionStrings__MongoDb=mongodb://mongodb:27017
+      - ConnectionStrings__Neo4j=bolt://neo4j:7687
+    depends_on:
+      - redis
+      - mongodb
+      - neo4j
     restart: always
+    networks:
+      - backend
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    networks:
+      - backend
+    volumes:
+      - redis-data:/data
+
+  mongodb:
+    image: mongo:8
+    restart: always
+    networks:
+      - backend
+    volumes:
+      - mongodb-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+
+  neo4j:
+    image: neo4j:5
+    restart: always
+    networks:
+      - backend
+    ports:
+      - "7474:7474" # Web UI
+      - "7687:7687" # Bolt protocol
+    environment:
+      NEO4J_AUTH: ${NEO4J_PASSWORD}/${NEO4J_PASSWORD} #
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  redis-data:
+  mongodb-data:
+  neo4j-data:
+  neo4j-logs:
