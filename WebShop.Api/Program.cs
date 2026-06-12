@@ -73,9 +73,9 @@ app.Use(async (context, next) =>
     finally
     {
         start.Stop();
-        var path = $"{context.Request.Path}{context.Request.QueryString}";
-        RequestFileLogger.Append(requestLogPath, context.Request.Method, path, context.Response.StatusCode, start.ElapsedMilliseconds, errorMessage);
-        mongoLogger.Append(context.Request.Method, path, context.Response.StatusCode, start.ElapsedMilliseconds, errorMessage);
+        var fullPath = $"{context.Request.Path}{context.Request.QueryString}";
+        RequestFileLogger.Append(requestLogPath, context.Request.Method, fullPath, context.Response.StatusCode, start.ElapsedMilliseconds, errorMessage);
+        mongoLogger.Append(context.Request.Method, context.Request.Path.ToString(), context.Response.StatusCode, start.ElapsedMilliseconds, errorMessage);
     }
 });
 

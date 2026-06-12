@@ -33,11 +33,22 @@ public static class SystemRoutes
             });
         });
 
-        app.MapGet("/admin/logs", async (MongoRequestLogger mongoLogger, int limit = 100) =>
+        app.MapGet("/admin/logs", async (long adminUserId, DbOptions db, MongoRequestLogger mongoLogger, int limit = 100) =>
         {
+            if (adminUserId <= 0)
+            {
+                return Results.BadRequest(new { message = "Admin user id must be greater than 0." });
+            }
+
             if (limit < 1 || limit > 1000)
             {
                 return Results.BadRequest(new { message = "Limit must be between 1 and 1000." });
+            }
+
+            using var connection = Db.CreateOpenConnection(db.DatabasePath);
+            if (!Db.IsAdmin(connection, adminUserId))
+            {
+                return Results.Unauthorized();
             }
 
             var logs = await mongoLogger.GetRecentAsync(limit);
