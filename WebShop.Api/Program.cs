@@ -3,6 +3,7 @@ using WebShop.Api.Helpers;
 using WebShop.Api.Models;
 using WebShop.Api.Routes;
 using StackExchange.Redis;
+using Neo4j.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuredUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
@@ -30,7 +31,7 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
 {
     var redisConnection =
         builder.Configuration.GetConnectionString("Redis")
-        ?? "145.24.223.151:6379";
+        ?? "redis:6379";
 
     try
     {
@@ -44,6 +45,26 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
         throw;
     }
 });
+
+builder.Services.AddSingleton<IDriver>(_ =>
+{
+    try
+    {
+        var uri = builder.Configuration.GetConnectionString("Neo4j" ?? "bolt://neo4j:7687");
+        var user = Environment.GetEnvironmentVariable("NEO4J_USERNAME");
+        var password = Environment.GetEnvironmentVariable("NEO4J_PASSWORD");
+
+        return GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
+    } catch (Exception ex)
+    {
+        Console.WriteLine($"Neo4j connection failed: {ex}");
+        throw;
+    }
+});
+
+builder.Services.AddSingleton<ProductRecommendationCache>();
+builder.Services.AddSingleton<SystemRoutes>();
+builder.Services.AddSingleton<CatalogRoutes>();
 
 builder.Services.AddSingleton<ICartStore, RedisCartStore>();
 builder.Services.AddEndpointsApiExplorer();
@@ -59,9 +80,6 @@ Directory.CreateDirectory(logFolder);
 var requestLogPath = Path.Combine(logFolder, "requests.log");
 var documentationFolder = Path.Combine(builder.Environment.ContentRootPath, "Documentation");
 Directory.CreateDirectory(documentationFolder);
-
-// Initialize recommendations cache
-await ProductRecommendationCache.RefreshIfNeeded(databasePath, forceRefresh: true);
 
 app.Use(async (context, next) =>
 {
@@ -94,9 +112,11 @@ app.Use(async (context, next) =>
 app.MapAuthRoutes();
 app.MapUserRoutes();
 app.MapAdminRoutes();
-app.MapCatalogRoutes();
+app.Services.GetRequiredService<CatalogRoutes>()
+    .MapCatalogRoutes(app);
 app.MapCartAndOrderRoutes();
-app.MapSystemRoutes(documentationFolder);
+app.Services.GetRequiredService<SystemRoutes>()
+    .MapSystemRoutes(app, documentationFolder);
 app.UseStaticFiles();
 app.MapFallbackToFile("index.html");
 

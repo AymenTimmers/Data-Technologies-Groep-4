@@ -5,9 +5,15 @@ using WebShop.Api.Helpers;
 
 namespace WebShop.Api.Routes;
 
-public static class CatalogRoutes
+public class CatalogRoutes
 {
-    public static WebApplication MapCatalogRoutes(this WebApplication app)
+    private ProductRecommendationCache _recommendationCache;
+    public CatalogRoutes(ProductRecommendationCache recommendationCache)
+    {
+        _recommendationCache = recommendationCache;
+    }
+
+    public WebApplication MapCatalogRoutes(WebApplication app)
     {
         app.MapGet("/products", async (DbOptions db) =>
         {
@@ -137,8 +143,8 @@ public static class CatalogRoutes
 
             if (!Db.ProductExists(connection, id)) return Results.NotFound();
 
-            ProductRecommendationCache.RefreshIfNeeded(db.DatabasePath);
-            var recs = ProductRecommendationCache.GetRecommendations(id);
+            await _recommendationCache.RefreshIfNeeded(db.DatabasePath);
+            var recs = _recommendationCache.GetRecommendations(id);
 
             return Results.Ok(new { productId = id, recommendations = recs });
         });
