@@ -16,8 +16,6 @@ services:
     restart: always
     networks:
       - backend
-    env_file:
-      - .env
 
   redis:
     image: redis:7-alpine
