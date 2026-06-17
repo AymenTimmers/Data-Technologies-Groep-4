@@ -8,18 +8,36 @@ public static class AuthRoutes
 {
     public static WebApplication MapAuthRoutes(this WebApplication app)
     {
-        app.MapPost("/auth/register", (RegisterRequest request, DbOptions db) =>
+        app.MapPost("/auth/register", (RegisterRequest request, DbOptions db, JwtService jwtService) =>
         {
-            if (!Input.TryNormalizeEmail(request.Email, out var normalizedEmail))
+            // Validate email
+            var (isValidEmail, emailError) = InputValidator.ValidateEmail(request.Email);
+            if (!isValidEmail)
             {
-                return Results.BadRequest(new { message = "A valid email is required." });
+                return Results.BadRequest(new { message = emailError });
             }
 
-            if (!Input.IsValidPassword(request.Password))
+            // Validate password with strong requirements
+            var (isValidPassword, passwordError) = InputValidator.ValidatePassword(request.Password);
+            if (!isValidPassword)
             {
-                return Results.BadRequest(new { message = "Password must be between 6 and 128 characters." });
+                return Results.BadRequest(new { message = passwordError });
             }
 
+            // Validate names
+            var (isValidFirstName, firstNameError) = InputValidator.ValidateName(request.FirstName, "First name");
+            if (!isValidFirstName)
+            {
+                return Results.BadRequest(new { message = firstNameError });
+            }
+
+            var (isValidLastName, lastNameError) = InputValidator.ValidateName(request.LastName, "Last name");
+            if (!isValidLastName)
+            {
+                return Results.BadRequest(new { message = lastNameError });
+            }
+
+            var normalizedEmail = request.Email.Trim().ToLowerInvariant();
             var firstName = Input.NormalizeOptional(request.FirstName, 100);
             var lastName = Input.NormalizeOptional(request.LastName, 100);
 
@@ -46,14 +64,17 @@ public static class AuthRoutes
             userCommand.Parameters.AddWithValue("@firstName", (object?)firstName ?? DBNull.Value);
             userCommand.Parameters.AddWithValue("@lastName", (object?)lastName ?? DBNull.Value);
 
-            var userId = Convert.ToInt64(userCommand.ExecuteScalar());
+            var userId = (int)Convert.ToInt64(userCommand.ExecuteScalar());
 
             transaction.Commit();
 
-            return Results.Created($"/users/{userId}", new { userId, email = normalizedEmail, role = 0 });
+            // Generate JWT token for new user
+            var token = jwtService.GenerateToken(userId, normalizedEmail, "user");
+
+            return Results.Created($"/users/{userId}", new AuthResponse(userId, normalizedEmail, 0, token));
         });
 
-        app.MapPost("/auth/login", (LoginRequest request, DbOptions db) =>
+        app.MapPost("/auth/login", (LoginRequest request, DbOptions db, JwtService jwtService) =>
         {
             if (!Input.TryNormalizeEmail(request.Email, out var normalizedEmail) || string.IsNullOrWhiteSpace(request.Password))
             {
@@ -63,11 +84,10 @@ public static class AuthRoutes
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
             using var command = connection.CreateCommand();
             command.CommandText = @"
-                SELECT id, email, role
+                SELECT id, email, password_hash, role
                 FROM users
-                WHERE email = @email AND password_hash = @passwordHash";
+                WHERE email = @email";
             command.Parameters.AddWithValue("@email", normalizedEmail);
-            command.Parameters.AddWithValue("@passwordHash", Security.HashPassword(request.Password));
 
             using var reader = command.ExecuteReader();
             if (!reader.Read())
@@ -75,11 +95,20 @@ public static class AuthRoutes
                 return Results.Unauthorized();
             }
 
-            return Results.Ok(new AuthResponse(
-                reader.GetInt64(0),
-                reader.GetString(1),
-                reader.GetInt32(2)
-            ));
+            var userId = (int)reader.GetInt64(0);
+            var email = reader.GetString(1);
+            var storedHash = reader.GetString(2);
+            var role = reader.GetInt32(3);
+
+            if (!PasswordService.VerifyPassword(request.Password, storedHash))
+            {
+                return Results.Unauthorized();
+            }
+
+            // Generate JWT token
+            var token = jwtService.GenerateToken(userId, email, role == 1 ? "admin" : "user");
+
+            return Results.Ok(new AuthResponse(userId, email, role, token));
         });
 
         return app;

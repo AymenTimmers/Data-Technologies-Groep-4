@@ -8,20 +8,22 @@ public static class AdminRoutes
 {
     public static WebApplication MapAdminRoutes(this WebApplication app)
     {
-        app.MapGet("/admin/users/search", (long adminUserId, string? query, DbOptions db) =>
+        app.MapGet("/admin/users/search", (HttpContext context, string? query, DbOptions db) =>
         {
-            if (adminUserId <= 0)
-            {
-                return Results.BadRequest(new { message = "Admin user id must be greater than 0." });
-            }
-
-            using var connection = Db.CreateOpenConnection(db.DatabasePath);
-            if (!Db.IsAdmin(connection, adminUserId))
+            // Check authentication and admin role
+            if (!context.IsAuthenticated())
             {
                 return Results.Unauthorized();
             }
 
+            if (!context.IsAdmin())
+            {
+                return Results.Forbid();
+            }
+
             var q = string.IsNullOrWhiteSpace(query) ? null : $"%{query.Trim()}%";
+
+            using var connection = Db.CreateOpenConnection(db.DatabasePath);
 
             using var command = connection.CreateCommand();
             command.CommandText = @"
@@ -49,7 +51,7 @@ public static class AdminRoutes
             }
 
             return Results.Ok(users);
-        });
+        }).RequireAuthorization();
 
         app.MapGet("/admin/users/{userId:long}", (long userId, long adminUserId, DbOptions db) =>
         {
