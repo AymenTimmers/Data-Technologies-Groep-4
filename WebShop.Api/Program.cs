@@ -31,7 +31,8 @@ DbBootstrapper.EnsureCreated(databasePath, databaseFolder);
 builder.Services.AddSingleton(new DbOptions(databasePath));
 
 // Initialize encryption service
-var encryptionKeyBase64 = Environment.GetEnvironmentVariable("ENCRYPTION_KEY");
+var encryptionKeyBase64 = builder.Configuration["ENCRYPTION_KEY"];
+
 if (string.IsNullOrEmpty(encryptionKeyBase64))
 {
     throw new InvalidOperationException(
@@ -45,7 +46,7 @@ var backupDirectory = Path.Combine(databaseFolder, "backups");
 builder.Services.AddSingleton(new BackupService(databasePath, backupDirectory));
 
 // Initialize JWT service
-var jwtSecretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
+var jwtSecretKey = builder.Configuration["JWT_SECRET_KEY"];
 if (string.IsNullOrEmpty(jwtSecretKey) || jwtSecretKey.Length < 32)
 {
     throw new InvalidOperationException(
