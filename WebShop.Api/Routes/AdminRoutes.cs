@@ -53,19 +53,24 @@ public static class AdminRoutes
             return Results.Ok(users);
         }).RequireAuthorization();
 
-        app.MapGet("/admin/users/{userId:long}", (long userId, long adminUserId, DbOptions db) =>
+        app.MapGet("/admin/users/{userId:long}", (HttpContext context, long userId, long adminUserId, DbOptions db) =>
         {
             if (userId <= 0 || adminUserId <= 0)
             {
                 return Results.BadRequest(new { message = "User id and admin user id must be greater than 0." });
             }
 
-            using var connection = Db.CreateOpenConnection(db.DatabasePath);
-            if (!Db.IsAdmin(connection, adminUserId))
+            if (!context.IsAuthenticated())
             {
                 return Results.Unauthorized();
             }
 
+            if (!context.IsAdmin())
+            {
+                return Results.Forbid();
+            }
+
+            using var connection = Db.CreateOpenConnection(db.DatabasePath);
             using var userCommand = connection.CreateCommand();
             userCommand.CommandText = @"
                 SELECT id, email, first_name, last_name, role, bank_iban, bank_account_name
@@ -171,11 +176,21 @@ public static class AdminRoutes
             ));
         });
 
-        app.MapPost("/admin/discount-codes/random", (CreateRandomDiscountCodeRequest request, DbOptions db) =>
+        app.MapPost("/admin/discount-codes/random", (HttpContext context, CreateRandomDiscountCodeRequest request, DbOptions db) =>
         {
             if (request.AdminUserId <= 0)
             {
                 return Results.BadRequest(new { message = "Admin user id must be greater than 0." });
+            }
+
+            if (!context.IsAuthenticated())
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!context.IsAdmin())
+            {
+                return Results.Forbid();
             }
 
             if (request.DiscountPercentage < 1 || request.DiscountPercentage > 90)
@@ -194,10 +209,6 @@ public static class AdminRoutes
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
-            if (!Db.IsAdmin(connection, request.AdminUserId))
-            {
-                return Results.Unauthorized();
-            }
 
             var validUntil = validUntilDate.Date.ToString("yyyy-MM-dd");
             string code;

@@ -15,8 +15,16 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy
-            .AllowAnyOrigin()
+        var allowedOrigins = builder.Configuration["CORS_ALLOWED_ORIGINS"];
+        if (string.IsNullOrWhiteSpace(allowedOrigins))
+        {
+            allowedOrigins = "http://localhost;https://localhost;http://127.0.0.1;https://127.0.0.1";
+        }
+
+        var origins = allowedOrigins
+            .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        policy.WithOrigins(origins)
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

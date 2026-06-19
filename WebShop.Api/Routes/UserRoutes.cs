@@ -122,11 +122,21 @@ public static class UserRoutes
             ));
         }).RequireAuthorization();
 
-        app.MapDelete("/users/{userId:long}/shipping-addresses/{addressId:long}", (long userId, long addressId, DbOptions db) =>
+        app.MapDelete("/users/{userId:long}/shipping-addresses/{addressId:long}", (long userId, long addressId, HttpContext context, DbOptions db) =>
         {
             if (userId <= 0 || addressId <= 0)
             {
                 return Results.BadRequest(new { message = "User id and address id must be greater than 0." });
+            }
+
+            if (!context.IsAuthenticated())
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!context.CanAccessUserData((int)userId))
+            {
+                return Results.Forbid();
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
@@ -141,13 +151,23 @@ public static class UserRoutes
             return rows == 0
                 ? Results.NotFound(new { message = "Address not found." })
                 : Results.Ok(new { message = "Address removed." });
-        });
+        }).RequireAuthorization();
 
-        app.MapGet("/users/{userId:long}/favorites", (long userId, DbOptions db) =>
+        app.MapGet("/users/{userId:long}/favorites", (long userId, HttpContext context, DbOptions db) =>
         {
             if (userId <= 0)
             {
                 return Results.BadRequest(new { message = "User id must be greater than 0." });
+            }
+
+            if (!context.IsAuthenticated())
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!context.CanAccessUserData((int)userId))
+            {
+                return Results.Forbid();
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
@@ -180,13 +200,23 @@ public static class UserRoutes
             }
 
             return Results.Ok(favorites);
-        });
+        }).RequireAuthorization();
 
-        app.MapPost("/users/{userId:long}/favorites/{productId:long}", (long userId, long productId, DbOptions db) =>
+        app.MapPost("/users/{userId:long}/favorites/{productId:long}", (long userId, long productId, HttpContext context, DbOptions db) =>
         {
             if (userId <= 0 || productId <= 0)
             {
                 return Results.BadRequest(new { message = "User id and product id must be greater than 0." });
+            }
+
+            if (!context.IsAuthenticated())
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!context.CanAccessUserData((int)userId))
+            {
+                return Results.Forbid();
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
@@ -208,13 +238,23 @@ public static class UserRoutes
             command.ExecuteNonQuery();
 
             return Results.Ok(new { message = "Product added to favorites." });
-        });
+        }).RequireAuthorization();
 
-        app.MapDelete("/users/{userId:long}/favorites/{favoriteId:long}", (long userId, long favoriteId, DbOptions db) =>
+        app.MapDelete("/users/{userId:long}/favorites/{favoriteId:long}", (long userId, long favoriteId, HttpContext context, DbOptions db) =>
         {
             if (userId <= 0 || favoriteId <= 0)
             {
                 return Results.BadRequest(new { message = "User id and favorite id must be greater than 0." });
+            }
+
+            if (!context.IsAuthenticated())
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!context.CanAccessUserData((int)userId))
+            {
+                return Results.Forbid();
             }
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
@@ -229,7 +269,7 @@ public static class UserRoutes
             return rows == 0
                 ? Results.NotFound(new { message = "Favorite not found." })
                 : Results.Ok(new { message = "Favorite removed." });
-        });
+        }).RequireAuthorization();
 
         return app;
     }
