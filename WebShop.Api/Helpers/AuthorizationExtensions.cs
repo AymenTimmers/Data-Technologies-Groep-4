@@ -23,7 +23,7 @@ public static class AuthorizationExtensions
     }
 
     /// <summary>
-    /// Checks if the current user is authenticated.
+    /// Checks if the current user is authenticated (whitelist approach).
     /// </summary>
     public static bool IsAuthenticated(this HttpContext context)
     {
@@ -31,53 +31,71 @@ public static class AuthorizationExtensions
     }
 
     /// <summary>
-    /// Checks if the current user has admin role.
+    /// Checks if the current user has admin role (whitelist approach).
     /// </summary>
     public static bool IsAdmin(this HttpContext context)
     {
         var role = context.User?.FindFirst(ClaimTypes.Role)?.Value;
-        return role == "admin";
+
+        if (role == "admin")
+        {
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>
-    /// Checks if the current user ID matches the requested user ID (or is admin).
-    /// Used for protecting endpoints where users can only access their own data.
+    /// Checks if the current user is allowed to access the target user data.
+    /// Whitelist: only explicitly allowed cases return true.
     /// </summary>
     public static bool CanAccessUserData(this HttpContext context, int targetUserId)
     {
         var currentUserId = context.GetCurrentUserId();
+
         if (currentUserId == null)
         {
             return false;
         }
 
-        // Allow if user is accessing their own data or if they're admin
-        return currentUserId == targetUserId || context.IsAdmin();
+        if (currentUserId == targetUserId)
+        {
+            return true;
+        }
+
+        if (context.IsAdmin())
+        {
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>
-    /// Returns 403 Forbidden if user is not authorized.
+    /// Returns 403 Forbidden if user is not authorized (whitelist approach).
     /// </summary>
     public static IResult ForbidIfUnauthorized(this HttpContext context, bool isAuthorized)
     {
-        if (!isAuthorized)
+        if (isAuthorized == true)
         {
-            return Results.Forbid();
+            // Gevolgd door de code die je in deze functie wil uitvoeren
+            return Results.Empty;
         }
 
-        return Results.Empty; // Placeholder, should not be used directly
+        return Results.Forbid();
     }
 
     /// <summary>
-    /// Returns 401 Unauthorized if user is not authenticated.
+    /// Returns 401 Unauthorized if user is not authenticated (whitelist approach).
     /// </summary>
     public static IResult UnauthorizedIfNotAuthenticated(this HttpContext context)
     {
-        if (!context.IsAuthenticated())
+        if (context.IsAuthenticated() == true)
         {
-            return Results.Unauthorized();
+            // Gevolgd door de code die je in deze functie wil uitvoeren
+            return Results.Empty;
         }
 
-        return Results.Empty; // Placeholder, should not be used directly
+        return Results.Forbid();
     }
 }
