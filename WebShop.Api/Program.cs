@@ -7,6 +7,7 @@ using WebShop.Api.Models;
 using WebShop.Api.Routes;
 using StackExchange.Redis;
 using Neo4j.Driver;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuredUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
@@ -122,6 +123,26 @@ builder.Services.AddSingleton<IDriver>(_ =>
     }
 });
 
+builder.Services.AddSingleton<IMongoClient>(_ =>
+{
+    var mongoConnection =
+        builder.Configuration.GetConnectionString("MongoDb")
+        ?? "mongodb://localhost:27017";
+
+    try
+    {
+        var client = new MongoClient(mongoConnection);
+        Console.WriteLine($"MongoDB connected: {mongoConnection}");
+        return client;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"MongoDB connection failed: {ex}");
+        throw;
+    }
+});
+
+builder.Services.AddSingleton<MongoReviewService>();
 builder.Services.AddSingleton<ProductRecommendationCache>();
 builder.Services.AddSingleton<SystemRoutes>();
 builder.Services.AddSingleton<CatalogRoutes>();

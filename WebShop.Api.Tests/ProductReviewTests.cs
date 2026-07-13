@@ -1,159 +1,186 @@
+using MongoDB.Driver;
+using Moq;
+using WebShop.Api.Helpers;
+
 namespace WebShop.Api.Tests;
 
 public class ProductReviewTests
 {
-    [Fact]
-    public void Review_CanBeCreated_ForProduct()
+    private static MongoReviewService CreateService(
+        Mock<IMongoCollection<ProductReviewDocument>>? collection = null)
     {
-        var dbPath = Path.Combine(Path.GetTempPath(), $"test_{Guid.NewGuid()}.db");
-        try
-        {
-            CreateReviewDatabase(dbPath);
-            CreateReviewTestData(dbPath);
-            
-            using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}"))
-            {
-                connection.Open();
-                using var cmd = connection.CreateCommand();
-                cmd.CommandText = @"
-                    INSERT INTO product_ratings (user_id, product_id, rating, explanation, created_at)
-                    VALUES (1, 1, 5, 'Great product!', datetime('now'));";
-                cmd.ExecuteNonQuery();
-            }
+        var mockCollection = collection ?? new Mock<IMongoCollection<ProductReviewDocument>>();
 
-            using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}"))
-            {
-                connection.Open();
-                using var cmd = connection.CreateCommand();
-                cmd.CommandText = "SELECT COUNT(*) FROM product_ratings WHERE product_id = 1";
-                var count = (long?)cmd.ExecuteScalar();
-                Assert.Equal(1, count);
-            }
-        }
-        finally
-        {
-            TestDataHelper.SafeDeleteTestDatabase(dbPath);
-        }
+        var mockIndexManager = new Mock<IMongoIndexManager<ProductReviewDocument>>();
+        mockIndexManager
+            .Setup(i => i.CreateOne(
+                It.IsAny<CreateIndexModel<ProductReviewDocument>>(),
+                It.IsAny<CreateOneIndexOptions>(),
+                It.IsAny<CancellationToken>()))
+            .Returns("index_name");
+
+        mockCollection.Setup(c => c.Indexes).Returns(mockIndexManager.Object);
+
+        var mockDb = new Mock<IMongoDatabase>();
+        mockDb
+            .Setup(d => d.GetCollection<ProductReviewDocument>("product_reviews", It.IsAny<MongoCollectionSettings>()))
+            .Returns(mockCollection.Object);
+
+        var mockClient = new Mock<IMongoClient>();
+        mockClient
+            .Setup(c => c.GetDatabase("webshop", It.IsAny<MongoDatabaseSettings>()))
+            .Returns(mockDb.Object);
+
+        return new MongoReviewService(mockClient.Object);
+    }
+
+    private static Mock<IMongoCollection<ProductReviewDocument>> CollectionWithDocuments(
+        List<ProductReviewDocument> documents)
+    {
+        var mockCursor = new Mock<IAsyncCursor<ProductReviewDocument>>();
+        mockCursor.SetupSequence(c => c.MoveNextAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true)
+            .ReturnsAsync(false);
+        mockCursor.Setup(c => c.Current).Returns(documents);
+
+        var mockCollection = new Mock<IMongoCollection<ProductReviewDocument>>();
+        mockCollection
+            .Setup(c => c.FindAsync(
+                It.IsAny<FilterDefinition<ProductReviewDocument>>(),
+                It.IsAny<FindOptions<ProductReviewDocument, ProductReviewDocument>>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mockCursor.Object);
+
+        return mockCollection;
     }
 
     [Fact]
-    public void Review_EnforcesRatingConstraint_1To5()
+    public async Task GetReviewsForProductAsync_NoReviews_ReturnsEmptyList()
     {
-        var dbPath = Path.Combine(Path.GetTempPath(), $"test_{Guid.NewGuid()}.db");
-        try
-        {
-            CreateReviewDatabase(dbPath);
-            CreateReviewTestData(dbPath);
-            
-            // Try to insert invalid rating
-            using var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}");
-            connection.Open();
-            
-            using var cmd = connection.CreateCommand();
-            cmd.CommandText = @"
-                INSERT INTO product_ratings (user_id, product_id, rating, explanation, created_at)
-                VALUES (1, 1, 6, 'Invalid rating', datetime('now'));";
-            
-            var exception = Assert.Throws<Microsoft.Data.Sqlite.SqliteException>(() => cmd.ExecuteNonQuery());
-            Assert.Contains("CHECK", exception.Message);
-        }
-        finally
-        {
-            TestDataHelper.SafeDeleteTestDatabase(dbPath);
-        }
+        var mockCollection = CollectionWithDocuments([]);
+        var service = CreateService(mockCollection);
+
+        var result = await service.GetReviewsForProductAsync(1);
+
+        Assert.Empty(result);
     }
 
     [Fact]
-    public void Review_UniqueUserProductConstraint_EnforcedCorrectly()
+    public async Task GetReviewsForProductAsync_WithReviews_MapsFieldsCorrectly()
     {
-        var dbPath = Path.Combine(Path.GetTempPath(), $"test_{Guid.NewGuid()}.db");
-        try
+        var createdAt = new DateTime(2024, 6, 1, 12, 0, 0, DateTimeKind.Utc);
+        var documents = new List<ProductReviewDocument>
         {
-            CreateReviewDatabase(dbPath);
-            CreateReviewTestData(dbPath);
-            
-            // Insert first review
-            using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}"))
+            new()
             {
-                connection.Open();
-                using var cmd = connection.CreateCommand();
-                cmd.CommandText = @"
-                    INSERT INTO product_ratings (user_id, product_id, rating, explanation, created_at)
-                    VALUES (1, 1, 5, 'Great!', datetime('now'));";
-                cmd.ExecuteNonQuery();
+                ProductId = 1,
+                UserId = 42,
+                Email = "user@example.com",
+                Rating = 5,
+                Explanation = "Great product!",
+                CreatedAt = createdAt
             }
+        };
 
-            // Insert duplicate (should use upsert in real scenario, but test the constraint)
-            using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}"))
-            {
-                connection.Open();
-                using var cmd = connection.CreateCommand();
-                cmd.CommandText = @"
-                    INSERT OR REPLACE INTO product_ratings (user_id, product_id, rating, explanation, created_at)
-                    VALUES (1, 1, 4, 'Actually good', datetime('now'));";
-                cmd.ExecuteNonQuery();
-            }
+        var mockCollection = CollectionWithDocuments(documents);
+        var service = CreateService(mockCollection);
 
-            // Verify only one review exists
-            using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}"))
-            {
-                connection.Open();
-                using var cmd = connection.CreateCommand();
-                cmd.CommandText = "SELECT COUNT(*) FROM product_ratings WHERE user_id = 1 AND product_id = 1";
-                var count = (long?)cmd.ExecuteScalar();
-                Assert.Equal(1, count);
-            }
-        }
-        finally
-        {
-            TestDataHelper.SafeDeleteTestDatabase(dbPath);
-        }
+        var result = await service.GetReviewsForProductAsync(1);
+
+        Assert.Single(result);
+        var review = result[0];
+        Assert.Equal(1, review.ProductId);
+        Assert.Equal(42, review.UserId);
+        Assert.Equal("user@example.com", review.UserEmail);
+        Assert.Equal(5, review.Stars);
+        Assert.Equal("Great product!", review.Explanation);
+        Assert.Equal(createdAt.ToString("o"), review.CreatedAtUtc);
     }
 
-    private static void CreateReviewDatabase(string dbPath)
+    [Fact]
+    public async Task GetReviewsForProductAsync_NullExplanation_MapsToEmptyString()
     {
-        using var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}");
-        connection.Open();
-        using var cmd = connection.CreateCommand();
-        cmd.CommandText = @"
-            PRAGMA foreign_keys = ON;
-            CREATE TABLE users (
-                id INTEGER PRIMARY KEY,
-                email TEXT UNIQUE NOT NULL,
-                password_hash TEXT NOT NULL,
-                role INTEGER DEFAULT 0
-            );
-            CREATE TABLE products (
-                id INTEGER PRIMARY KEY,
-                category_id INTEGER,
-                name TEXT NOT NULL,
-                price REAL NOT NULL,
-                stock INTEGER NOT NULL
-            );
-            CREATE TABLE product_ratings (
-                id INTEGER PRIMARY KEY,
-                user_id INTEGER NOT NULL,
-                product_id INTEGER NOT NULL,
-                rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
-                explanation TEXT NOT NULL,
-                created_at TEXT NOT NULL,
-                UNIQUE(user_id, product_id),
-                FOREIGN KEY(user_id) REFERENCES users(id),
-                FOREIGN KEY(product_id) REFERENCES products(id)
-            );";
-        cmd.ExecuteNonQuery();
+        var documents = new List<ProductReviewDocument>
+        {
+            new()
+            {
+                ProductId = 2,
+                UserId = 7,
+                Email = "a@b.com",
+                Rating = 3,
+                Explanation = null,
+                CreatedAt = DateTime.UtcNow
+            }
+        };
+
+        var mockCollection = CollectionWithDocuments(documents);
+        var service = CreateService(mockCollection);
+
+        var result = await service.GetReviewsForProductAsync(2);
+
+        Assert.Single(result);
+        Assert.Equal(string.Empty, result[0].Explanation);
     }
 
-    private static void CreateReviewTestData(string dbPath)
+    [Fact]
+    public async Task GetReviewsForProductAsync_MultipleReviews_ReturnsAll()
     {
-        using var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}");
-        connection.Open();
-        using var cmd = connection.CreateCommand();
-        cmd.CommandText = @"
-            INSERT INTO users (email, password_hash, role) VALUES
-            ('reviewer@example.com', 'hash123', 0);
-            INSERT INTO products (category_id, name, price, stock) VALUES
-            (1, 'Test Product', 29.99, 50);";
-        cmd.ExecuteNonQuery();
+        var documents = new List<ProductReviewDocument>
+        {
+            new() { ProductId = 3, UserId = 1, Email = "a@a.com", Rating = 5, Explanation = "A", CreatedAt = DateTime.UtcNow },
+            new() { ProductId = 3, UserId = 2, Email = "b@b.com", Rating = 4, Explanation = "B", CreatedAt = DateTime.UtcNow },
+            new() { ProductId = 3, UserId = 3, Email = "c@c.com", Rating = 3, Explanation = "C", CreatedAt = DateTime.UtcNow },
+        };
+
+        var mockCollection = CollectionWithDocuments(documents);
+        var service = CreateService(mockCollection);
+
+        var result = await service.GetReviewsForProductAsync(3);
+
+        Assert.Equal(3, result.Count);
+    }
+
+    [Fact]
+    public async Task UpsertReviewAsync_CallsUpdateOneWithUpsert()
+    {
+        var mockCollection = new Mock<IMongoCollection<ProductReviewDocument>>();
+        mockCollection
+            .Setup(c => c.UpdateOneAsync(
+                It.IsAny<FilterDefinition<ProductReviewDocument>>(),
+                It.IsAny<UpdateDefinition<ProductReviewDocument>>(),
+                It.IsAny<UpdateOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new UpdateResult.Acknowledged(1, 1, null));
+
+        var service = CreateService(mockCollection);
+
+        await service.UpsertReviewAsync(1, 42, "user@example.com", 5, "Excellent!");
+
+        mockCollection.Verify(c => c.UpdateOneAsync(
+            It.IsAny<FilterDefinition<ProductReviewDocument>>(),
+            It.IsAny<UpdateDefinition<ProductReviewDocument>>(),
+            It.Is<UpdateOptions>(o => o.IsUpsert == true),
+            It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task UpsertReviewAsync_NullExplanation_DoesNotThrow()
+    {
+        var mockCollection = new Mock<IMongoCollection<ProductReviewDocument>>();
+        mockCollection
+            .Setup(c => c.UpdateOneAsync(
+                It.IsAny<FilterDefinition<ProductReviewDocument>>(),
+                It.IsAny<UpdateDefinition<ProductReviewDocument>>(),
+                It.IsAny<UpdateOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new UpdateResult.Acknowledged(1, 1, null));
+
+        var service = CreateService(mockCollection);
+
+        var ex = await Record.ExceptionAsync(() =>
+            service.UpsertReviewAsync(10, 5, "test@test.com", 4, null));
+
+        Assert.Null(ex);
     }
 }

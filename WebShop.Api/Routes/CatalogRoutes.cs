@@ -7,10 +7,13 @@ namespace WebShop.Api.Routes;
 
 public class CatalogRoutes
 {
-    private ProductRecommendationCache _recommendationCache;
-    public CatalogRoutes(ProductRecommendationCache recommendationCache)
+    private readonly ProductRecommendationCache _recommendationCache;
+    private readonly MongoReviewService _mongoReviews;
+
+    public CatalogRoutes(ProductRecommendationCache recommendationCache, MongoReviewService mongoReviews)
     {
         _recommendationCache = recommendationCache;
+        _mongoReviews = mongoReviews;
     }
 
     public WebApplication MapCatalogRoutes(WebApplication app)
@@ -96,19 +99,12 @@ public class CatalogRoutes
             var productExists = await connection.ExecuteScalarAsync<bool>(
                 "SELECT COUNT(1) FROM products WHERE id = @id", new { id });
 
-            if (!productExists) 
+            if (!productExists)
             {
                 return Results.NotFound(new { message = $"Product with ID {id} does not exist." });
             }
 
-            const string sql = @"
-                SELECT pr.id, pr.product_id AS ProductId, pr.user_id AS UserId, u.email, pr.rating, pr.explanation, pr.created_at AS CreatedAt
-                FROM product_ratings pr
-                INNER JOIN users u ON u.id = pr.user_id
-                WHERE pr.product_id = @id
-                ORDER BY datetime(pr.created_at) DESC";
-
-            var reviews = await connection.QueryAsync<ProductReviewDto>(sql, new { id });
+            var reviews = await _mongoReviews.GetReviewsForProductAsync(id);
             return Results.Ok(reviews);
         });
 
@@ -118,21 +114,19 @@ public class CatalogRoutes
             if (request.Stars < 1 || request.Stars > 5) return Results.BadRequest(new { message = "Stars 1-5." });
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
-            
-            const string sql = @"
-                INSERT INTO product_ratings (user_id, product_id, rating, explanation, created_at)
-                VALUES (@UserId, @ProductId, @Rating, @Explanation, datetime('now'))
-                ON CONFLICT(user_id, product_id) DO UPDATE SET
-                    rating = excluded.rating,
-                    explanation = excluded.explanation,
-                    created_at = datetime('now');";
 
-            await connection.ExecuteAsync(sql, new { 
-                UserId = request.UserId, 
-                ProductId = id, 
-                Rating = request.Stars, 
-                Explanation = request.Explanation 
-            });
+            if (!Db.ProductExists(connection, id))
+                return Results.NotFound(new { message = "Product not found." });
+
+            using var userCmd = connection.CreateCommand();
+            userCmd.CommandText = "SELECT email FROM users WHERE id = @userId LIMIT 1";
+            userCmd.Parameters.AddWithValue("@userId", request.UserId);
+            var email = userCmd.ExecuteScalar() as string;
+
+            if (email is null)
+                return Results.NotFound(new { message = "User not found." });
+
+            await _mongoReviews.UpsertReviewAsync(id, request.UserId, email, request.Stars, request.Explanation);
 
             return Results.Ok(new { message = "Review saved." });
         });
