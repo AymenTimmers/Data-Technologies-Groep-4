@@ -143,7 +143,7 @@ var requestLogPath = Path.Combine(logFolder, "requests.log");
 var documentationFolder = Path.Combine(builder.Environment.ContentRootPath, "Documentation");
 Directory.CreateDirectory(documentationFolder);
 
-app.Use(async (context, next) =>e
+app.Use(async (context, next) =>
 {
     var start = Stopwatch.StartNew();
     string? errorMessage = null;
