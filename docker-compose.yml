@@ -17,7 +17,7 @@ services:
     networks:
       - backend
     volumes:
-      - webshop-logs: /app/Logs
+      - webshop-logs:/app/Logs
 
   redis:
     image: redis:7-alpine
