@@ -6,11 +6,11 @@ WORKDIR /src
 COPY . .
 
 # 2. Restore using the solution file
-RUN dotnet restore "Data-Technologies-Groep-4.sln"
+RUN dotnet restore "WebShop.Api/WebShop.Api.csproj"
 
 # 3. Build and Publish the Api project
 WORKDIR "/src/WebShop.Api"
-RUN dotnet publish "WebShop.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "WebShop.Api.csproj" -c Release -o /app/publish --no-restore /-:UseAppHost=false
 
 # 4. Final Runtime Image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
