@@ -143,6 +143,7 @@ builder.Services.AddSingleton<IMongoClient>(_ =>
 });
 
 builder.Services.AddSingleton<MongoReviewService>();
+builder.Services.AddSingleton<MongoProductService>();
 builder.Services.AddSingleton<ProductRecommendationCache>();
 builder.Services.AddSingleton<SystemRoutes>();
 builder.Services.AddSingleton<CatalogRoutes>();
@@ -152,6 +153,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+await MongoMigrations.BackfillProductDescriptionsAsync(
+    databasePath,
+    app.Services.GetRequiredService<MongoProductService>());
+
 app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();

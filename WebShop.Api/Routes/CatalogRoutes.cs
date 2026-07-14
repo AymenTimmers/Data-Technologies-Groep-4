@@ -9,11 +9,16 @@ public class CatalogRoutes
 {
     private readonly ProductRecommendationCache _recommendationCache;
     private readonly MongoReviewService _mongoReviews;
+    private readonly MongoProductService _mongoProducts;
 
-    public CatalogRoutes(ProductRecommendationCache recommendationCache, MongoReviewService mongoReviews)
+    public CatalogRoutes(
+        ProductRecommendationCache recommendationCache,
+        MongoReviewService mongoReviews,
+        MongoProductService mongoProducts)
     {
         _recommendationCache = recommendationCache;
         _mongoReviews = mongoReviews;
+        _mongoProducts = mongoProducts;
     }
 
     public WebApplication MapCatalogRoutes(WebApplication app)
@@ -22,13 +27,16 @@ public class CatalogRoutes
         {
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
             string sql = @"
-                SELECT id, category_id, name, price, stock, description, brand, publisher, release_year
+                SELECT id, category_id, name, price, stock, brand, publisher, release_year
                 FROM products
                 ORDER BY id";
 
-            var products = await connection.QueryAsync<ProductDto>(sql);
+            var products = (await connection.QueryAsync<ProductDto>(sql)).ToList();
+            var descriptions = await _mongoProducts.GetDescriptionsAsync(products.Select(p => p.Id));
 
-            return Results.Ok(products);
+            var result = products.Select(p => p with { Description = descriptions.GetValueOrDefault(p.Id) });
+
+            return Results.Ok(result);
         });
 
         app.MapGet("/categories", async (DbOptions db) =>
@@ -43,24 +51,32 @@ public class CatalogRoutes
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
             
             var sql = @"
-                SELECT p.id, p.category_id AS CategoryId, p.name, p.price, p.stock, p.description, p.brand, p.publisher, p.release_year AS ReleaseYear
+                SELECT p.id, p.category_id AS CategoryId, p.name, p.price, p.stock, p.brand, p.publisher, p.release_year AS ReleaseYear
                 FROM products p
-                WHERE (p.name LIKE @Search OR p.description LIKE @Search OR p.brand LIKE @Search OR @Search IS NULL)
+                WHERE (p.name LIKE @Search OR p.brand LIKE @Search OR @Search IS NULL OR p.id IN @DescriptionMatchIds)
                 AND (p.category_id = @CategoryId OR @CategoryId <= 0 OR @CategoryId IS NULL)
                 AND (p.price >= @MinPrice OR @MinPrice IS NULL)
                 AND (p.price <= @MaxPrice OR @MaxPrice IS NULL)
                 ORDER BY p.name";
 
             var searchPattern = string.IsNullOrWhiteSpace(request.SearchTerm) ? null : $"%{request.SearchTerm}%";
-            
-            var products = await connection.QueryAsync<ProductDto>(sql, new {
+
+            var descriptionMatchIds = string.IsNullOrWhiteSpace(request.SearchTerm)
+                ? new List<long>()
+                : await _mongoProducts.SearchProductIdsByDescriptionAsync(request.SearchTerm);
+
+            var products = (await connection.QueryAsync<ProductDto>(sql, new {
                 Search = searchPattern,
                 CategoryId = request.CategoryId,
                 MinPrice = request.MinPrice,
-                MaxPrice = request.MaxPrice
-            });
+                MaxPrice = request.MaxPrice,
+                DescriptionMatchIds = descriptionMatchIds
+            })).ToList();
 
-            return Results.Ok(products);
+            var descriptions = await _mongoProducts.GetDescriptionsAsync(products.Select(p => p.Id));
+            var result = products.Select(p => p with { Description = descriptions.GetValueOrDefault(p.Id) });
+
+            return Results.Ok(result);
         });
 
         app.MapGet("/products/top-sold", async (DbOptions db) =>
@@ -85,10 +101,13 @@ public class CatalogRoutes
             if (id <= 0) return Results.BadRequest(new { message = "Product id must be greater than 0." });
 
             using var connection = Db.CreateOpenConnection(db.DatabasePath);
-            const string sql = "SELECT id, category_id AS CategoryId, name, price, stock, description, brand, publisher, release_year AS ReleaseYear FROM products WHERE id = @id";
-            
+            const string sql = "SELECT id, category_id AS CategoryId, name, price, stock, brand, publisher, release_year AS ReleaseYear FROM products WHERE id = @id";
+
             var product = await connection.QueryFirstOrDefaultAsync<ProductDto>(sql, new { id });
-            return product is not null ? Results.Ok(product) : Results.NotFound();
+            if (product is null) return Results.NotFound();
+
+            var description = await _mongoProducts.GetDescriptionAsync(id);
+            return Results.Ok(product with { Description = description });
         });
 
         app.MapGet("/products/{id:long}/reviews", async (long id, DbOptions db) =>
