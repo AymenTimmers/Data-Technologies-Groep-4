@@ -10,7 +10,7 @@ RUN dotnet restore "WebShop.Api/WebShop.Api.csproj"
 
 # 3. Build and Publish the Api project
 WORKDIR "/src/WebShop.Api"
-RUN dotnet publish "WebShop.Api.csproj" -c Release -o /app/publish --no-restore /-:UseAppHost=false
+RUN dotnet publish "WebShop.Api.csproj" -c Release -o /app/publish --no-restore /p:UseAppHost=false
 
 # 4. Final Runtime Image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
