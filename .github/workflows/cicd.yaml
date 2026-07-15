@@ -55,7 +55,6 @@ jobs:
             ghcr.io/${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
   deploy:
-    deploy:
     name: Deploy
     runs-on: self-hosted
     needs: docker-build-push

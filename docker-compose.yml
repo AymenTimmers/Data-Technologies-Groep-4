@@ -1,6 +1,6 @@
 services:
   webshop:
-    image: ghcr.io/aymentimmers/webshop-api
+    image: ghcr.io/aymentimmers/webshop-api:latest
     ports:
       - "8080:5088"
     environment:
