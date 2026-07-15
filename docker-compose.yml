@@ -9,6 +9,8 @@ services:
       - ConnectionStrings__Redis=redis:6379
       - ConnectionStrings__MongoDb=mongodb://admin:very-long-random-password@mongodb:27017/?authSource=admin
       - ConnectionStrings__Neo4j=bolt://neo4j:7687
+      - NEO4J_USERNAME=neo4j
+      - NEO4J_PASSWORD=another-long-random-password
     depends_on:
       - redis
       - mongodb

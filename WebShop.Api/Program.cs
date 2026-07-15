@@ -114,7 +114,10 @@ builder.Services.AddSingleton<IDriver>(_ =>
         var uri = builder.Configuration.GetConnectionString("Neo4j" ?? "bolt://neo4j:7687");
         var user = Environment.GetEnvironmentVariable("NEO4J_USERNAME");
         var password = Environment.GetEnvironmentVariable("NEO4J_PASSWORD");
-
+        Console.WriteLine($"Neo4j URI: {uri}");
+        Console.WriteLine($"Neo4j User: {user}");
+        Console.WriteLine($"Neo4j Password set: {!string.IsNullOrEmpty(password)}");
+        
         return GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
     } catch (Exception ex)
     {
