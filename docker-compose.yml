@@ -7,7 +7,7 @@ services:
       - ASPNETCORE_URLS=http://0.0.0.0:5088
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__Redis=redis:6379
-      - ConnectionStrings__MongoDb=mongodb://mongodb:27017
+      - ConnectionStrings__MongoDb=mongodb://admin:very-long-random-password@mongodb:27017/?authSource=admin
       - ConnectionStrings__Neo4j=bolt://neo4j:7687
     depends_on:
       - redis
